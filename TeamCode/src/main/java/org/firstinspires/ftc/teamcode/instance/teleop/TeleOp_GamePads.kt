@@ -7,9 +7,9 @@ import org.firstinspires.ftc.teamcode.components.Arm_v2
 import org.firstinspires.ftc.teamcode.components.TeleOp_events
 import org.firstinspires.ftc.teamcode.instances.auto.Simple_events_Chambers
 
-class TeleOp_GamePads (private val instance: LinearOpMode, private val armv2: Arm_v2) {
+class TeleOp_GamePads (private val instance: LinearOpMode) {
 
-    val eventListener = TeleOp_events(instance, armv2)
+    val eventListener = TeleOp_events(instance)
 
     private val gamepad1 = instance.gamepad1
     private val gamepad2 = instance.gamepad2

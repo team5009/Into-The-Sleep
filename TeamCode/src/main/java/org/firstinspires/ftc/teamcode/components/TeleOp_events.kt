@@ -9,8 +9,11 @@ import org.firstinspires.ftc.teamcode.instances.auto.Simple_events_Chambers.Cham
 import java.util.concurrent.atomic.AtomicReference
 
 
-class TeleOp_events (instance: LinearOpMode, private val armv2 : Arm_v2) {
+class TeleOp_events (instance: LinearOpMode) {
     val listener = EventListener()
+
+    val arm = Arm_v2(instance)
+
     val arm_r = HyperionMotor(instance.hardwareMap, "SL")
     val arm_l = HyperionMotor(instance.hardwareMap, "SR")
     val gear_l = HyperionMotor(instance.hardwareMap, "GL")
