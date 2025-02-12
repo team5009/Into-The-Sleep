@@ -2,9 +2,14 @@ package org.firstinspires.ftc.teamcode.instances.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
+import kotlinx.coroutines.delay
 import org.firstinspires.ftc.teamcode.components.Arm_v2
+import org.firstinspires.ftc.teamcode.components.TeleOp_events
+import org.firstinspires.ftc.teamcode.instances.auto.Simple_events_Chambers
 
-class TeleOp_GamePads (private val instance: LinearOpMode) {
+class TeleOp_GamePads (private val instance: LinearOpMode, private val armv2: Arm_v2) {
+
+    val eventListener = TeleOp_events(instance, armv2)
 
     private val gamepad1 = instance.gamepad1
     private val gamepad2 = instance.gamepad2
@@ -24,7 +29,9 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
     var ps1_pressed = false
     var manual_slide = false
     var manual_wrist = false
+    var dpad_up = false
 
+    var slide = 0.0
 
     fun game_pad_1() {
         if (gamepad1.circle && armState == Arm_v2.ArmState.SUBMERSIBLE && !b1_pressed) {
@@ -39,16 +46,6 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             }
             b1_pressed = false
         }
-
-//        if(gamepad1.cross){
-//            Arm_v2.grav.set(true)
-//        }else{
-//            Arm_v2.grav.set(false)
-//        }
-//        if(gamepad1.square && armState == Arm_v2.ArmState.SUBMERSIBLE){
-//            Arm_v2.gear_target.set(60.0)
-//            Arm_v2.slide_target.set(7.0)
-//        }
         if(gamepad1.cross){
             Arm_v2.gear_target.set(-9.0)
             Arm_v2.slide_target.set(4.0)
@@ -73,6 +70,19 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             Arm_v2.gear_target.set(-9.0 + offset)
             Arm_v2.slide_target.set(3.0)
             armState = Arm_v2.ArmState.CRUISE
+        }
+
+        // HANG
+        if (gamepad1.dpad_down){
+            Arm_v2.gear_target.set(-30.0)
+            Arm_v2.slide_target.set(12.0)
+            arm.wrist_servos(0.96, 0.96)
+        }
+        if(gamepad1.dpad_up && !dpad_up){
+            eventListener.listener.call("Hang")
+            dpad_up = true
+        }else{
+            dpad_up = false
         }
 
         // ARM DOWN
@@ -216,14 +226,6 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
 //            b_pressed = false
 //        }
 
-        // HANGING
-        /*if(gamepad2.left_stick_y > 0.5) {
-            hang_arm.setPowerWithTol(-1.0)  //lift robot
-        } else if(gamepad2.left_stick_y < -0.5) {
-            hang_arm.setPowerWithTol(0.6)   //raise hook
-        } else {
-            hang_arm.setPowerWithTol(0.0)
-        }*/
 
         // INTAKE SERVOS
         if (gamepad2.right_bumper) {

@@ -74,7 +74,6 @@ class MainTeleOp: LinearOpMode() {
 			telemetry.addData("gear", controls.arm.gear_angle())
 			telemetry.addData("R", controls.arm.right_wrist.position)
 			telemetry.addData("L", controls.arm.left_wrist.position)
-			//telemetry.addData("Hang encorder", controls.hang_arm.position)
 			telemetry.update()
 		}
 	}
