@@ -14,17 +14,16 @@ class Simple_events_Chambers (instance:LinearOpMode, private val arm : Arm_v2) {
         arm.init_auto()
 
         listener.addListener("start_sample") {
-            arm.wrist_servos(0.96,0.96)
+            arm.wrist_servos(0.96, 0.96)
             Arm_v2.gear_target.set(0.0)
             Arm_v2.grav.set(true)
             arm.go_to_target()
             Arm_v2.grav.set(false)
-            states.set(ChamberStates.READY)
-            while(instance.opModeIsActive() || instance.opModeInInit()){
+            while (instance.opModeIsActive() || instance.opModeInInit()){
                 arm.go_to_target(gear_is_on = !Arm_v2.grav.get())
             }
             Arm_v2.grav.set(false)
-
+            states.set(ChamberStates.READY)
             "started"
         }
         listener.addListener("set_gear") {
@@ -32,26 +31,26 @@ class Simple_events_Chambers (instance:LinearOpMode, private val arm : Arm_v2) {
             Arm_v2.gear_target.set(-9.0)
             Arm_v2.slide_target.set(8.0)
             arm.wrist_servos(0.34, 0.34)
-            "gear_set"
+            "drop_arm"
         }
         listener.addListener("drop_arm") {
+            if(instance.opModeIsActive() && states.get() != ChamberStates.CLIP_READY){
+                delay(100)
+            }
             Arm_v2.gear_target.set(-9.0)
             Arm_v2.slide_target.set(3.0)
             delay(500)
             arm.intake_servos(1.0)
             delay(700)
             Arm_v2.grav.set(false)
+            states.set(ChamberStates.CLIPPED)
             "picked_up"
         }
-        listener.addListener("first_chamber") {
-            arm.wrist_servos(0.4,0.4)
-            //arm.intake_servos(-0.2)
-            Arm_v2.slide_target.set(5.3)
-            Arm_v2.gear_target.set(62.0)
-            delay(1000)
-            Arm_v2.grav.set(true)
-            //arm.intake_servos(0.0)
-            "first_chamber_ready"
+        listener.addListener("push") {
+            Arm_v2.gear_target.set(90.0)
+            Arm_v2.slide_target.set(7.0)
+            arm.wrist_servos(0.96, 0.96)
+            "pushing"
         }
 
         listener.addListener("chamber_up") {

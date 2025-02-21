@@ -20,17 +20,16 @@ class TeleOp_events (instance: LinearOpMode) {
     val gear_r = HyperionMotor(instance.hardwareMap, "GR")
 
     init{
+        arm_l.motor.direction = DcMotorSimple.Direction.FORWARD
+        arm_r.motor.direction = DcMotorSimple.Direction.REVERSE
+        gear_l.motor.direction = DcMotorSimple.Direction.REVERSE
+        gear_r.motor.direction = DcMotorSimple.Direction.FORWARD
+
         listener.addListener("Hang"){
-            arm_l.motor.direction = DcMotorSimple.Direction.FORWARD
-            arm_r.motor.direction = DcMotorSimple.Direction.REVERSE
+
             arm_l.power = -1.0
             arm_r.power = -1.0
-            gear_l.power = -1.0
-            gear_r.power = -1.0
-            delay(1000)
-            gear_l.power = 1.0
-            gear_r.power = 1.0
-            delay(1000)
+            delay(2000)
             gear_l.power = -1.0
             gear_r.power = -1.0
             "Hung"

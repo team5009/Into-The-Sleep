@@ -44,7 +44,7 @@ class Menu : LinearOpMode() {
                 arm.gear_l.power = -0.4
                 arm.gear_r.power = -0.4
             }else{
-                if(arm.gear_angle() < -50.0) {
+                if(arm.gear_angle() < -35.0) {
                     arm.gear_l.power = 0.06
                     arm.gear_r.power = 0.06
                 }else {

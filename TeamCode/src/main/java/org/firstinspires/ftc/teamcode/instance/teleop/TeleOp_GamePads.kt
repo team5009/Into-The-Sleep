@@ -84,6 +84,16 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         }else{
             dpad_up = false
         }
+        if(gamepad1.right_bumper){
+            arm.gear_r.power = -1.0
+            arm.gear_l.power = -1.0
+        }else if(gamepad1.left_bumper){
+            arm.gear_r.power = 1.0
+            arm.gear_l.power = 1.0
+        }else {
+            arm.gear_r.power = 0.0
+            arm.gear_l.power = 0.0
+        }
 
         // ARM DOWN
 //        if (armState == Arm_v2.ArmState.SUBMERSIBLE && gamepad1.a && !gamepad1.start && !a1_pressed) {

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.components
 import ca.helios5009.hyperion.core.PIDFController
 import ca.helios5009.hyperion.hardware.HyperionMotor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -29,6 +30,7 @@ class Arm_v2(private val instance: LinearOpMode) {
     val pid_gear = PIDFController(PidGear.kP, PidGear.kI, PidGear.kD, PidGear.kF)
     val pid_slide = PIDFController(PidSlide.kP, PidSlide.kI, PidSlide.kD, PidSlide.kF)
 
+    val wrist_position = 5.5/3.3*360.0
     val gear_degrees_ticks = (150.0*384.5)/19.0/360.0
     var cur_gear_target  = 0.0
     val distance_limit = 10.0
@@ -45,6 +47,8 @@ class Arm_v2(private val instance: LinearOpMode) {
 
     val left_wrist = instance.hardwareMap.get(Servo::class.java, "Left_Wrist")
     val right_wrist = instance.hardwareMap.get(Servo::class.java, "Right_Wrist")
+    val right_wrist_encoder = instance.hardwareMap.get(AnalogInput::class.java, "RWE")
+    val left_wrist_encoder = instance.hardwareMap.get(AnalogInput::class.java, "LWE")
     val intake_1 = instance.hardwareMap.get(CRServo::class.java, "Intake_1")
     val intake_2 = instance.hardwareMap.get(CRServo::class.java,"Intake_2")
 
@@ -87,7 +91,7 @@ class Arm_v2(private val instance: LinearOpMode) {
         gear_l.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         gear_r.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
-        val gear_start_pos = -50.0
+        val gear_start_pos = -35.0
 
         slide_target.set(0.0)
         gear_target.set(gear_start_pos)
@@ -103,6 +107,9 @@ class Arm_v2(private val instance: LinearOpMode) {
         slide_target.set(0.0)
         intake_1.power = 0.0
         intake_2.power = 0.0
+    }
+    fun wrist_pos() : Double {
+        return wrist_position
     }
     fun slide_height() : Double {
         return slide_l.position.toDouble()/slide_inches_ticks
@@ -194,8 +201,8 @@ class Arm_v2(private val instance: LinearOpMode) {
 
     }
     fun wrist_servos(left: Double, right: Double){
-        left_wrist.position = min(left + safety, 0.9)
-        right_wrist.position = min(right + safety, 0.9)
+        left_wrist.position = min(left + safety, 1.0)
+        right_wrist.position = min(right + safety, 1.0)
     }
     fun intake_servos(power: Double){
         intake_1.power = power

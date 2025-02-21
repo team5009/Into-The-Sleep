@@ -15,14 +15,15 @@ class Auto_Chamber_Quals (private val instance : LinearOpMode, private val arm :
         val linearadjust = 1.0
         bot.path.start(Point(11.0, 63.0 * linearadjust, "start_sample").setDeg(0.0))//start
         .wait(500.0)
-        .segment(
-            Point(18.0, 63.0 * linearadjust).setTolerance(6.0).setDeg(-179.0),
-            Point(28.0, 63.0 * linearadjust, "set_gear").setDeg(-179.0)
-        )
-
+        .segment(Point(18.0, 63.0 * linearadjust).setTolerance(6.0).setDeg(-179.0))
+        bot.path.segment(Point(28.0, 63.0 * linearadjust, "set_gear").setDeg(-179.0))
+        eventListener.states.set(Simple_events_Chambers.ChamberStates.CLIP_READY)
+        while(instance.opModeIsActive() && eventListener.states.get() != Simple_events_Chambers.ChamberStates.CLIPPED) {
+            bot.path.wait(100.0)
+        }
 //        .wait("gear_set")
-        .segment(
-            Point(36.0, 63.0,"drop_arm").setTolerance(4.0).setDeg(-179.0),
+        bot.path.segment(
+            Point(36.0, 63.0).setTolerance(4.0).setDeg(-179.0),
             Point(39.5, 63.0 * linearadjust).setTolerance(3.5).setDeg(-179.0),
             Point(36.5, 63.0 * linearadjust).setDeg(-179.0)
         )

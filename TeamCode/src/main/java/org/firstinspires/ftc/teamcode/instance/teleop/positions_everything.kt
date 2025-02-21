@@ -19,7 +19,7 @@
 //		var left = 1.0
 //		var right = 1.0
 //		motors.setPowerRatio(1.0)
-//		otos.Position(Point(6.5,110.0))
+//		otos.position(Point(6.5,110.0))
 //		waitForStart()
 //		while (opModeIsActive()) {
 //			left_wrist.position = left

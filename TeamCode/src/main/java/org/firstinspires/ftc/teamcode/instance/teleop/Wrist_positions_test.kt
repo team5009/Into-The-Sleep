@@ -14,8 +14,8 @@ class Wrist_positions_test: LinearOpMode() {
 		val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
 		motors.setPowerRatio(1.0)
 		val arm = Arm_v2(this)
-		var left = 0.5
-		var right = 0.5
+		var left = 0.0
+		var right = 0.0
 		var drive = 0.0
 		val half_way = 180.0
 		arm.slide_r.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
@@ -59,34 +59,43 @@ class Wrist_positions_test: LinearOpMode() {
 			arm.wrist_servos(left, right)
 			arm.gear_angle()
 			if (gamepad1.dpad_up){
-				if(right != 1.0 && left != 1.0 && right + left < 2.0) {
+				if(right != left){
+					left = 0.25
+					right = 0.25
+				}else if(right + left < 1.0 && right < 0.5 && left < 0.5) {
 					right += 0.01
 					left += 0.01
 				}
-			} else if(gamepad1.dpad_down) {
-				if(right != 0.0 && left != 0.0 && right + left >0.0){
+			}
+			if(gamepad1.dpad_down) {
+				if(right != left){
+					left = 0.25
+					right = 0.25
+				}else if(right + left > 0.0 && right > 0.0 && left > 0.0){
 					right -= 0.01
 					left -= 0.01
 				}
 			}
+			if (gamepad1.dpad_left) {
+				if(right + left <= 1.10 && right < 1.0 && left > 0.0) {
+					right += 0.01
+					left -= 0.01
+				}
+			}
+			if (gamepad1.dpad_right) {
+				if(right + left <= 1.10 && left < 1.0 && right > 0.0) {
+					right -= 0.01
+					left += 0.01
+				}
+			}
 			if (gamepad1.right_bumper) {
-				arm.intake_servos(1.0)  //outake
+				arm.intake_servos(1.0)  //outtake
 			} else if (gamepad1.left_bumper) {
 				arm.intake_servos(-1.0)
 			} else {
 				arm.intake_servos(0.0)
 			}
-//			if (gamepad1.dpad_left) {
-//				if(right != 1.0 && left != 0.0) {
-//					right += 0.01
-//					left -= 0.01
-//				}
-//			} else if (gamepad1.dpad_right) {
-//				if(right != 0.0 && left != 1.0) {
-//					right -= 0.01
-//					left += 0.01
-//				}
-//			}
+//
 			telemetry.addData("right", right)
 			telemetry.addData("left", left)
 			telemetry.addData("Gear angle", arm.gear_angle())
