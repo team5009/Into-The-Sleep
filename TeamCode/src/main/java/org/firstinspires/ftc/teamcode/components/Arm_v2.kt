@@ -25,7 +25,7 @@ import kotlin.reflect.typeOf
 
 class Arm_v2(private val instance: LinearOpMode) {
 
-    val safety = 0.1
+    val safety = 0.0
 
     val pid_gear = PIDFController(PidGear.kP, PidGear.kI, PidGear.kD, PidGear.kF)
     val pid_slide = PIDFController(PidSlide.kP, PidSlide.kI, PidSlide.kD, PidSlide.kF)
@@ -45,6 +45,8 @@ class Arm_v2(private val instance: LinearOpMode) {
     val slide_l = HyperionMotor(instance.hardwareMap, "SR")
     val slide_r = HyperionMotor(instance.hardwareMap, "SL")
 
+    val CS = instance.hardwareMap.get(Color_Sensor::class.java, "CS")
+
     val left_wrist = instance.hardwareMap.get(Servo::class.java, "Left_Wrist")
     val right_wrist = instance.hardwareMap.get(Servo::class.java, "Right_Wrist")
     val right_wrist_encoder = instance.hardwareMap.get(AnalogInput::class.java, "RWE")
@@ -56,8 +58,8 @@ class Arm_v2(private val instance: LinearOpMode) {
     init {
         gear_r.motor.direction = DcMotorSimple.Direction.FORWARD
         gear_l.motor.direction = DcMotorSimple.Direction.REVERSE
-        slide_l.motor.direction = DcMotorSimple.Direction.FORWARD
-        slide_r.motor.direction = DcMotorSimple.Direction.REVERSE
+        slide_l.motor.direction = DcMotorSimple.Direction.REVERSE
+        slide_r.motor.direction = DcMotorSimple.Direction.FORWARD
 
         for (i in -30..30) {
             val rad : Double = (i*5.0) * PI / 180.0
@@ -97,7 +99,7 @@ class Arm_v2(private val instance: LinearOpMode) {
         gear_target.set(gear_start_pos)
         cur_gear_target = gear_start_pos
 
-        //wrist_servos(0.25,0.25)
+        wrist_servos(0.05,0.05)
         intake_1.power = 0.0
         intake_2.power = 0.0
     }

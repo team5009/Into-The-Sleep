@@ -5,14 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Servo
 import kotlinx.coroutines.delay
 import org.firstinspires.ftc.teamcode.components.Arm_v2
+import org.firstinspires.ftc.teamcode.components.Color_Sensor
+import org.firstinspires.ftc.teamcode.components.My_Color_Sensor
 import java.util.concurrent.atomic.AtomicReference
 
 class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
     val listener = EventListener()
     val state = AtomicReference(AutoStates.START)
+    var color = My_Color_Sensor(instance)
+    val CS = instance.hardwareMap.get(Color_Sensor::class.java, "CS")
     init {
         listener.addListener("start_sample") {
-            arm.wrist_servos(0.96,0.96)
+            arm.wrist_servos(0.25,0.25)
             Arm_v2.gear_target.set(0.0)
             Arm_v2.grav.set(true)
             arm.go_to_target()
@@ -25,7 +29,7 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
         }
         listener.addListener("set_gear") {
             Arm_v2.gear_target.set(0.0)
-            arm.wrist_servos(0.96,0.96)
+            arm.wrist_servos(0.25,0.25)
             while(arm.gear_angle() < -30.0){
                 delay(10)
             }
@@ -40,18 +44,20 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
             while(arm.slide_height() < 19.0){
                 delay(50)
             }
-            arm.wrist_servos(0.5, 0.5)
+            arm.wrist_servos(0.25, 0.25)
             "drop_sample"
         }
         listener.addListener("drop_sample") {
             while(instance.opModeIsActive() && state.get() != AutoStates.DROP_READY){
                 delay(100)
             }
-            arm.wrist_servos(0.34, 0.34)
+            arm.wrist_servos(0.08, 0.08)
             delay(300)
             arm.intake_servos(1.0)
-            delay(900)
-            arm.wrist_servos(0.8, 0.8)
+            while (instance.opModeIsActive() && color.dist() < 2.5){
+                delay(10)
+            }
+            arm.wrist_servos(0.5, 0.5)
             delay(200)
             arm.intake_servos(0.0)
             Arm_v2.slide_target.set(7.0)
@@ -81,7 +87,9 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
             Arm_v2.grav.set(true)
             //arm.wrist_servos(0.45,0.45)
             arm.intake_servos(-1.0)
-            delay(900)
+            while (instance.opModeIsActive() && color.dist() > 2.5){
+                delay(10)
+            }
             Arm_v2.grav.set(false)
             Arm_v2.gear_target.set(40.0)
             delay(300)

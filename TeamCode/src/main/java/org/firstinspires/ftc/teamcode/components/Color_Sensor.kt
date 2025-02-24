@@ -6,12 +6,13 @@ import android.view.View
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DistanceSensor
+import com.qualcomm.robotcore.hardware.Light
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor
 import com.qualcomm.robotcore.hardware.SwitchableLight
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 
 
-@TeleOp(name = "Sensor: Color", group = "Sensor")
+@TeleOp(name = "CS", group = "Sensor")
 class Color_Sensor : LinearOpMode() {
     /** The colorSensor field will contain a reference to our color sensor hardware object  */
     var colorSensor: NormalizedColorSensor? = null
@@ -82,7 +83,7 @@ class Color_Sensor : LinearOpMode() {
         // If possible, turn the light on in the beginning (it might already be on anyway,
         // we just make sure it is if we can).
         if (colorSensor is SwitchableLight) {
-            (colorSensor as SwitchableLight).enableLight(true)
+            (colorSensor as SwitchableLight).enableLight(false)
         }
 
         // Wait for the start button to be pressed.
@@ -113,14 +114,10 @@ class Color_Sensor : LinearOpMode() {
             xButtonCurrentlyPressed = gamepad1.x
 
             // If the button state is different than what it was, then act
-            if (xButtonCurrentlyPressed != xButtonPreviouslyPressed) {
+            if (gamepad1.x) {
                 // If the button is (now) down, then toggle the light
-                if (xButtonCurrentlyPressed) {
-                    if (colorSensor is SwitchableLight) {
                         val light = colorSensor as SwitchableLight
                         light.enableLight(!light.isLightOn)
-                    }
-                }
             }
             xButtonPreviouslyPressed = xButtonCurrentlyPressed
 
@@ -155,6 +152,7 @@ class Color_Sensor : LinearOpMode() {
 
                 )
             }
+
 
             telemetry.update()
 
