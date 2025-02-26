@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.Robot
 import org.firstinspires.ftc.teamcode.auto.PID_Tuning_F
 import org.firstinspires.ftc.teamcode.components.Arm
 import org.firstinspires.ftc.teamcode.components.Arm_v2
+import org.firstinspires.ftc.teamcode.components.Color_Sensor
+import org.firstinspires.ftc.teamcode.components.My_Color_Sensor
 import org.firstinspires.ftc.teamcode.components.Selector
 import org.firstinspires.ftc.teamcode.tunning.PID_Tuning_Diagon
 
@@ -20,6 +22,7 @@ class Menu : LinearOpMode() {
         telemetry = MultipleTelemetry(telemetry, dashboard.telemetry)
         val arm = Arm_v2(this)
         val s = Selector(this)
+        val CS = hardwareMap.get(Color_Sensor::class.java, "CS")
         val timer = ElapsedTime()
         while(opModeInInit() && Selector.selectors.entries[s.selector] != Selector.selectors.DONE) {
             s.select()
