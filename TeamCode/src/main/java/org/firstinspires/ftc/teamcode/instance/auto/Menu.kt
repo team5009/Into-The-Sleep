@@ -22,7 +22,7 @@ class Menu : LinearOpMode() {
         telemetry = MultipleTelemetry(telemetry, dashboard.telemetry)
         val arm = Arm_v2(this)
         val s = Selector(this)
-        val CS = hardwareMap.get(Color_Sensor::class.java, "CS")
+        val color = My_Color_Sensor(this)
         val timer = ElapsedTime()
         while(opModeInInit() && Selector.selectors.entries[s.selector] != Selector.selectors.DONE) {
             s.select()

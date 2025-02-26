@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.firstinspires.ftc.teamcode.components.Arm_v2
 import org.firstinspires.ftc.teamcode.components.Arm.Companion.slide_target
+import org.firstinspires.ftc.teamcode.components.My_Color_Sensor
 import kotlin.math.abs
 
 @TeleOp(name = "Main")
@@ -16,6 +17,7 @@ class MainTeleOp: LinearOpMode() {
 	override fun runOpMode() {
 		val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
 		motors.setPowerRatio(1.0)
+		val color = My_Color_Sensor(this)
 
 		val timer = ElapsedTime()
 		var ended = false

@@ -13,7 +13,6 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
     val listener = EventListener()
     val state = AtomicReference(AutoStates.START)
     val color = My_Color_Sensor(instance)
-    val CS = instance.hardwareMap.get(Color_Sensor::class.java, "CS")
     init {
         listener.addListener("start_sample") {
             arm.wrist_servos(0.25,0.25)

@@ -11,8 +11,6 @@ import java.util.concurrent.atomic.AtomicReference
 
 class Simple_events_Chambers (instance:LinearOpMode, private val arm : Arm_v2) {
     val listener = EventListener()
-    val color = My_Color_Sensor(instance)
-    val CS = instance.hardwareMap.get(Color_Sensor::class.java, "CS")
     val states = AtomicReference(ChamberStates.START)
     init {
         arm.init_auto()

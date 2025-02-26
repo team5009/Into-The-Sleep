@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Robot
 import org.firstinspires.ftc.teamcode.components.Arm_v2
+import org.firstinspires.ftc.teamcode.components.My_Color_Sensor
 import org.firstinspires.ftc.teamcode.components.Selector
 import org.firstinspires.ftc.teamcode.instances.auto.Simple_events
 
@@ -25,8 +26,8 @@ class Auto_Sample_Quals (private val instance : LinearOpMode, private val arm : 
         }
 //        .wait("up_arm")
 //        .wait("dropped", "drop_sample")
-        bot.path.segment(Point(27.5, 116.0, "lift_down").setTolerance(4.0).setDeg(-5.0)
-                ,Point(24.5, 119.5 * linearadjust)
+        bot.path.segment(Point(26.5, 116.0, "lift_down").setTolerance(4.0).setDeg(-5.0)
+                ,Point(23.5, 119.5 * linearadjust)
         )
         eventListener.state.set(Simple_events.AutoStates.PICKUP_READY)
         while(instance.opModeIsActive() && eventListener.state.get() != Simple_events.AutoStates.PICKUP){
@@ -43,8 +44,8 @@ class Auto_Sample_Quals (private val instance : LinearOpMode, private val arm : 
         }
         //.wait("up_arm")
         //.wait("dropped", "drop_sample")
-        bot.path.segment(Point(26.0, 132.0 * linearadjust, "lift_down").setTolerance(4.0).setDeg(-10.0)
-                ,Point(24.0, 128.0 * linearadjust).setDeg(0.0)
+        bot.path.segment(Point(25.0, 132.0 * linearadjust, "lift_down").setTolerance(4.0).setDeg(-10.0)
+                ,Point(23.0, 128.0 * linearadjust).setDeg(0.0)
         )
         eventListener.state.set(Simple_events.AutoStates.PICKUP_READY)
         while(instance.opModeIsActive() && eventListener.state.get() != Simple_events.AutoStates.PICKUP){
@@ -62,8 +63,8 @@ class Auto_Sample_Quals (private val instance : LinearOpMode, private val arm : 
         //.wait("_up_arm")
         //.wait("_dropped", "_drop_sample")
         if(timer.seconds() < 24.0) {
-            bot.path.segment(Point(26.5,133.5 * linearadjust, "lift_down").setTolerance(5.0).setDeg(10.0)
-                        ,Point(25.0,128.5 * linearadjust).setDeg(27.0)
+            bot.path.segment(Point(25.5,133.5 * linearadjust, "lift_down").setTolerance(5.0).setDeg(10.0)
+                        ,Point(24.0,128.5 * linearadjust).setDeg(27.0)
             )
             eventListener.state.set(Simple_events.AutoStates.PICKUP_READY)
             while(instance.opModeIsActive() && eventListener.state.get() != Simple_events.AutoStates.PICKUP){

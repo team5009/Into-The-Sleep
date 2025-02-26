@@ -45,8 +45,6 @@ class Arm_v2(private val instance: LinearOpMode) {
     val slide_l = HyperionMotor(instance.hardwareMap, "SR")
     val slide_r = HyperionMotor(instance.hardwareMap, "SL")
 
-    val CS = instance.hardwareMap.get(Color_Sensor::class.java, "CS")
-
     val left_wrist = instance.hardwareMap.get(Servo::class.java, "Left_Wrist")
     val right_wrist = instance.hardwareMap.get(Servo::class.java, "Right_Wrist")
     val right_wrist_encoder = instance.hardwareMap.get(AnalogInput::class.java, "RWE")
