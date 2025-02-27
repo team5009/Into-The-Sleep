@@ -189,9 +189,13 @@ class Arm_v2(private val instance: LinearOpMode) {
             gear_l.power = 0.0
             gear_r.power = 0.0
         }
+        if(slide_is_on){
+            slide_l.setPowerWithTol(slide_output)
+            slide_r.setPowerWithTol(slide_output)
+        }else if() {
 
-        slide_l.setPowerWithTol(slide_output)
-        slide_r.setPowerWithTol(slide_output)
+        }
+
 
 
         instance.telemetry.addData("Error Gear", gear_output)

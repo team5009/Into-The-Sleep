@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.instances.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.util.ElapsedTime
-import kotlinx.coroutines.delay
 import org.firstinspires.ftc.teamcode.components.Arm_v2
 import org.firstinspires.ftc.teamcode.components.TeleOp_events
-import org.firstinspires.ftc.teamcode.instances.auto.Simple_events_Chambers
 
 class TeleOp_GamePads (private val instance: LinearOpMode) {
 
@@ -21,15 +20,16 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
     var armState = Arm_v2.ArmState.ENDED
     val cruise_timer = ElapsedTime()
     var y_pressed = false
-    var x_pressed = false
     var a1_pressed = false
     var a2_pressed = false
     var b1_pressed = false
     var b_pressed = false
-    var ps1_pressed = false
+    var x_pressed = false
     var manual_slide = false
     var manual_wrist = false
     var dpad_up = false
+    var end_game_mode = false
+    var ps_pressed = false
 
     var slide = 0.0
 
@@ -46,23 +46,15 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             }
             b1_pressed = false
         }
-        if(gamepad1.cross){
-            Arm_v2.gear_target.set(-9.0)
-            Arm_v2.slide_target.set(4.0)
-        }
-        if(gamepad1.ps && !ps1_pressed && armState == Arm_v2.ArmState.SUBMERSIBLE){
+        if(gamepad1.cross && !this.x_pressed && armState == Arm_v2.ArmState.SUBMERSIBLE){
             Arm_v2.grav.set(true)
             arm.wrist_servos(0.8, 0.8)
-            ps1_pressed = true
-        }else if(!gamepad1.ps && armState == Arm_v2.ArmState.SUBMERSIBLE  && ps1_pressed){
+            this.x_pressed = true
+        }else if(!gamepad1.cross && armState == Arm_v2.ArmState.SUBMERSIBLE  && this.x_pressed){
             Arm_v2.grav.set(false)
             Arm_v2.gear_target.set(60.0)
             Arm_v2.slide_target.set(7.0)
-            ps1_pressed = false
-        }
-
-        if(gamepad1.square) {
-            arm.wrist_servos(0.5,0.5)
+            this.x_pressed = false
         }
 
         // HIGH CHAMBER CLIP
@@ -76,24 +68,43 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         if (gamepad1.dpad_down){
             Arm_v2.gear_target.set(-30.0)
             Arm_v2.slide_target.set(12.0)
-            arm.wrist_servos(0.96, 0.96)
+            arm.wrist_servos(0.45, 0.45)
         }
-        if(gamepad1.dpad_up && !dpad_up){
-            eventListener.listener.call("Hang")
-            dpad_up = true
-        }else{
-            dpad_up = false
+
+        if(gamepad1.ps){
+            end_game_mode = true
+            Arm_v2.grav.set(true)
+            while (instance.opModeIsActive() && end_game_mode) {
+                if (gamepad1.right_bumper) {
+                    arm.gear_r.power = -1.0
+                    arm.gear_l.power = -1.0
+                } else if (gamepad1.left_bumper) {
+                    arm.gear_r.power = 1.0
+                    arm.gear_l.power = 1.0
+                } else {
+                    arm.gear_r.power = 0.0
+                    arm.gear_l.power = 0.0
+                }
+                if (gamepad1.dpad_up && !dpad_up) {
+                    arm.slide_r.power = -1.0
+                    arm.slide_l.power = -1.0
+                } else if (gamepad1.cross){
+                    arm.slide_r.power = 0.0
+                    arm.slide_l.power = 0.0
+                }
+                if(gamepad2.start){
+                    end_game_mode = false
+                    arm.gear_r.power = 0.0
+                    arm.gear_l.power = 0.0
+                    arm.slide_r.power = 0.0
+                    arm.slide_l.power = 0.0
+                }
+            }
+        }else if(gamepad1.ps && ps_pressed){
+            end_game_mode = false
+            Arm_v2.grav.set(false)
         }
-        if(gamepad1.right_bumper){
-            arm.gear_r.power = -1.0
-            arm.gear_l.power = -1.0
-        }else if(gamepad1.left_bumper){
-            arm.gear_r.power = 1.0
-            arm.gear_l.power = 1.0
-        }else {
-            arm.gear_r.power = 0.0
-            arm.gear_l.power = 0.0
-        }
+
 
         // ARM DOWN
 //        if (armState == Arm_v2.ArmState.SUBMERSIBLE && gamepad1.a && !gamepad1.start && !a1_pressed) {
@@ -141,7 +152,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
                 Arm_v2.gear_target.set(-9.0 + offset)
                 Arm_v2.slide_target.set(24.0)
                 Arm_v2.grav.set(false)
-                arm.wrist_servos(0.34, 0.34)
+                arm.wrist_servos(0.08, 0.08)
                 manual_slide = true
                 armState = Arm_v2.ArmState.HIGH_BASKET
             } else if (armState == Arm_v2.ArmState.CRUISE) {
@@ -149,7 +160,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
                 Arm_v2.gear_target.set(-9.0 + offset)
                 Arm_v2.slide_target.set(8.0)
                 Arm_v2.grav.set(false)
-                arm.wrist_servos(0.34, 0.34)
+                arm.wrist_servos(0.08, 0.08)
                 manual_slide = false
                 armState = Arm_v2.ArmState.LOW_BASKET
             } else {
@@ -180,7 +191,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             //sample pick up from submersible
             Arm_v2.gear_target.set(70.0 + offset)
             Arm_v2.slide_target.set(7.0)
-            arm.wrist_servos(0.8, 0.8)
+            arm.wrist_servos(0.45, 0.45)
             manual_slide = true
             manual_wrist = true
             Arm_v2.free_slide.set(false)
@@ -190,6 +201,11 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             a1_pressed = true
         } else if (!gamepad2.a && a2_pressed) {
             a2_pressed = false
+        }
+
+        // Push the samples
+        if(gamepad2.dpad_down){
+
         }
 
         // CHAMBERS

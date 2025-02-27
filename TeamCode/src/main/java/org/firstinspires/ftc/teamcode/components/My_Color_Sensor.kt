@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 
 class My_Color_Sensor (private val instance: LinearOpMode) {
+
     var CS : NormalizedColorSensor
     init {
         CS = Java_Color_Sensor().get("CS", instance.hardwareMap)
@@ -32,5 +33,4 @@ class My_Color_Sensor (private val instance: LinearOpMode) {
     fun dist() : Double{
         return (CS as DistanceSensor).getDistance(DistanceUnit.CM)
     }
-
 }

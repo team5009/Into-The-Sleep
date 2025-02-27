@@ -32,13 +32,13 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
             while(arm.gear_angle() < -30.0){
                 delay(10)
             }
-            Arm_v2.slide_target.set(20.0)
+            Arm_v2.slide_target.set(23.0)
             null
         }
         listener.addListener("arm_up") {
             arm.intake_servos(0.0)
             Arm_v2.gear_target.set(-9.0)
-            Arm_v2.slide_target.set(23.0)
+            Arm_v2.slide_target.set(24.0)
             delay(1000)
             while(arm.slide_height() < 19.0){
                 delay(50)
@@ -52,11 +52,12 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
             }
             arm.wrist_servos(0.08, 0.08)
             delay(300)
-            arm.intake_servos(1.0)
-            while (instance.opModeIsActive() && color.dist() < 2.5){
-                delay(10)
-            }
-            arm.wrist_servos(0.5, 0.5)
+            arm.intake_servos(-1.0)
+            delay(500)
+//            while (instance.opModeIsActive() && color.dist() < 2.5){
+//                delay(10)
+//            }
+            arm.wrist_servos(0.45, 0.45)
             delay(200)
             arm.intake_servos(0.0)
             Arm_v2.slide_target.set(7.0)
@@ -85,10 +86,11 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
             }
             Arm_v2.grav.set(true)
             //arm.wrist_servos(0.45,0.45)
-            arm.intake_servos(-1.0)
-            while (instance.opModeIsActive() && color.dist() > 2.5){
-                delay(10)
-            }
+            arm.intake_servos(1.0)
+            delay(900)
+//            while (instance.opModeIsActive() && color.dist() > 2.5){
+//                delay(10)
+//            }
             Arm_v2.grav.set(false)
             Arm_v2.gear_target.set(40.0)
             delay(300)

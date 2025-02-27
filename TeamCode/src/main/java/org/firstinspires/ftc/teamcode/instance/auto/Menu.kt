@@ -60,7 +60,7 @@ class Menu : LinearOpMode() {
         waitForStart()
 //        arm.gear_r.power = 0.5
 //        arm.gear_l.power = 0.5
-        arm.wrist_servos(0.96,0.96)
+        arm.wrist_servos(0.25,0.25)
         timer.reset()
         sleep(s.delay)
 
