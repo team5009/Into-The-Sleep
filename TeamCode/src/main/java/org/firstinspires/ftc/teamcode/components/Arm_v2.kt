@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.components
 
 import ca.helios5009.hyperion.core.PIDFController
 import ca.helios5009.hyperion.hardware.HyperionMotor
+import ca.helios5009.hyperion.misc.constants.Position
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServo
@@ -51,6 +52,8 @@ class Arm_v2(private val instance: LinearOpMode) {
     val left_wrist_encoder = instance.hardwareMap.get(AnalogInput::class.java, "LWE")
     val intake_1 = instance.hardwareMap.get(CRServo::class.java, "Intake_1")
     val intake_2 = instance.hardwareMap.get(CRServo::class.java,"Intake_2")
+    val sweeper = instance.hardwareMap.get(Servo::class.java, "Sweeper")
+    val park_auto = instance.hardwareMap.get(Servo::class.java, "Parker")
 
     val angles = HashMap<Double, Double>()
     init {
@@ -189,14 +192,9 @@ class Arm_v2(private val instance: LinearOpMode) {
             gear_l.power = 0.0
             gear_r.power = 0.0
         }
-        if(slide_is_on){
-            slide_l.setPowerWithTol(slide_output)
-            slide_r.setPowerWithTol(slide_output)
-        }else if() {
 
-        }
-
-
+        slide_l.setPowerWithTol(slide_output)
+        slide_r.setPowerWithTol(slide_output)
 
         instance.telemetry.addData("Error Gear", gear_output)
         instance.telemetry.addData("Error slide", slide_output)
@@ -211,6 +209,12 @@ class Arm_v2(private val instance: LinearOpMode) {
     fun intake_servos(power: Double){
         intake_1.power = power
         intake_2.power = -power
+    }
+    fun sweeper(position: Double){
+        sweeper.position = position
+    }
+    fun park_auto(position: Double){
+        park_auto.position = position
     }
     enum class ArmState {
         CRUISE,

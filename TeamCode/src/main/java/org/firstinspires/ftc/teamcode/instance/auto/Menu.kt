@@ -30,6 +30,10 @@ class Menu : LinearOpMode() {
             arm.manual_slide(gamepad1)
             telemetry.addData("Path: ", Selector.paths.entries[s.path_index])
             telemetry.addData("Selected Path: ", s.path_name)
+            telemetry.addData("Position: ", Selector.positions.entries[s.positions_index])
+            telemetry.addData("Selected Position: ", s.positions_names)
+            telemetry.addData("Is Silver: ",Selector.silver.entries[s.silver_index])
+            telemetry.addData("Silver is: ", s.is_silver)
             telemetry.addData("Delay(ms): ", s.delay)
             telemetry.addData("Selector: ", Selector.selectors.entries[s.selector])
             arm.angles[arm.closest_angle(arm.gear_angle())]?.let {

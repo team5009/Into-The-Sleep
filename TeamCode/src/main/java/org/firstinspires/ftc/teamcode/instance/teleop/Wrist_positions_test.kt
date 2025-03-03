@@ -76,18 +76,18 @@ class Wrist_positions_test: LinearOpMode() {
 					left -= 0.01
 				}
 			}
-			if (gamepad1.dpad_left) {
-				if(right + left <= 1.10 && right < 1.0 && left > 0.0) {
-					right += 0.01
-					left -= 0.01
-				}
-			}
-			if (gamepad1.dpad_right) {
-				if(right + left <= 1.10 && left < 1.0 && right > 0.0) {
-					right -= 0.01
-					left += 0.01
-				}
-			}
+//			if (gamepad1.dpad_left) {
+//				if(right + left <= 1.10 && right < 1.0 && left > 0.0) {
+//					right += 0.01
+//					left -= 0.01
+//				}
+//			}
+//			if (gamepad1.dpad_right) {
+//				if(right + left <= 1.10 && left < 1.0 && right > 0.0) {
+//					right -= 0.01
+//					left += 0.01
+//				}
+//			}
 			if (gamepad1.right_bumper) {
 				arm.intake_servos(1.0)  //outtake
 			} else if (gamepad1.left_bumper) {

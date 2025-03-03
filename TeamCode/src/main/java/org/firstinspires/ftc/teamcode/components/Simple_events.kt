@@ -100,9 +100,16 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
         }
         listener.addListener("ascend") {
             state.set(AutoStates.PARK)
-            Arm_v2.gear_target.set(20.0)
-            delay(1000)
+            arm.park_auto(0.5)
+            Arm_v2.gear_target.set(70.0)
+            Arm_v2.slide_target.set(8.0)
+            while (state.get() == AutoStates.SUB_PICK){
+                delay(10)
+            }
+            arm.intake_servos(1.0)
             Arm_v2.grav.set(true)
+            delay(500)
+            arm.intake_servos(0.0)
             "_"
         }
     }
@@ -112,6 +119,7 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
         DROP_READY,
         PICKUP,
         PICKUP_READY,
-        PARK
+        PARK,
+        SUB_PICK
     }
 }
