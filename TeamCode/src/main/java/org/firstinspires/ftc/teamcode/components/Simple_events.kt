@@ -76,7 +76,7 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
         }
         listener.addListener("lift_down_final") {
             Arm_v2.grav.set(false)
-            Arm_v2.gear_target.set(20.0)
+            Arm_v2.gear_target.set(70.0)
             Arm_v2.slide_target.set(10.0)
             "pick_up"
         }
@@ -103,14 +103,25 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
             arm.park_auto(0.5)
             Arm_v2.gear_target.set(70.0)
             Arm_v2.slide_target.set(8.0)
-            while (state.get() == AutoStates.SUB_PICK){
-                delay(10)
+            "_"
+        }
+        listener.addListener("sub_pick_up") {
+            while(instance.opModeIsActive() && state.get() != AutoStates.SUB_PICK){
+                delay(100)
             }
+            Arm_v2.grav.set(false)
+//            while (state.get() == AutoStates.SUB_PICK){
+//                delay(10)
+//            }
             arm.intake_servos(1.0)
             Arm_v2.grav.set(true)
             delay(500)
+//            while(instance.opModeIsActive() && color.dist() > 2.5){
+//                delay(10)
+//            }
             arm.intake_servos(0.0)
-            "_"
+            state.set(AutoStates.PICKUP)
+            "sub_picked_up"
         }
     }
     enum class AutoStates {

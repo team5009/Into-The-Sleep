@@ -28,8 +28,8 @@ class Auto_Sample_Quals (private val instance : LinearOpMode, private val arm : 
         //SILVER 5 SAMPLE
         if(s.is_silver == Selector.silver.YES){
             bot.path.segment(
-                Point(20.0, 85.0 * linearadjust, "lift_down").setDeg(-90.0),
-                Point(17.0, 88.0 * linearadjust).setTolerance(4.0).setDeg(-90.0)
+                Point(20.0, 65.0 * linearadjust, "lift_down").setDeg(-90.0),
+                Point(17.0, 69.0 * linearadjust).setTolerance(4.0).setDeg(-90.0)
             )
             eventListener.state.set(Simple_events.AutoStates.PICKUP_READY)
             while(instance.opModeIsActive() && eventListener.state.get() != Simple_events.AutoStates.PICKUP){
@@ -98,6 +98,23 @@ class Auto_Sample_Quals (private val instance : LinearOpMode, private val arm : 
             //.wait("_dropped", "_drop_sample")
         }
         eventListener.state.set(Simple_events.AutoStates.PARK)
+        if(timer.seconds() < 22.0){
+            bot.path.segment(
+             Point(62.0,115.0 * linearadjust, "lift_down_final").setTolerance(12.0).setDeg(-80.0)
+            ,Point(60.0, 93.0 * linearadjust, "sub_pick_up").setTolerance(8.0).setDeg(-80.0)
+            ,Point(60.0, 98.0 * linearadjust).setDeg(-80.0))
+            eventListener.state.set(Simple_events.AutoStates.SUB_PICK)
+            while (instance.opModeIsActive() && eventListener.state.get() != Simple_events.AutoStates.PICKUP){
+                bot.path.wait(100.0)
+            }
+            bot.path.segment(Point(17.5,122.5 * linearadjust, "arm_up").setTolerance(4.0).setDeg(-45.0)
+                ,Point(17.5,123.0 * linearadjust).setDeg(-45.0)
+            )
+            eventListener.state.set(Simple_events.AutoStates.DROP_READY)
+            while(instance.opModeIsActive() && eventListener.state.get() != Simple_events.AutoStates.PLACE){
+                bot.path.wait(100.0)
+            }
+        }
         bot.path.segment(
                 Point(62.0,115.0 * linearadjust, "lift_down_final").setTolerance(12.0).setDeg(-80.0)
                 ,Point(60.0, 93.0 * linearadjust, "ascend").setTolerance(8.0).setDeg(-80.0)
