@@ -28,8 +28,9 @@ class Auto_Sample_Quals (private val instance : LinearOpMode, private val arm : 
         //SILVER 5 SAMPLE
         if(s.is_silver == Selector.silver.YES){
             bot.path.segment(
-                Point(20.0, 65.0 * linearadjust, "lift_down").setDeg(-90.0),
-                Point(17.0, 69.0 * linearadjust).setTolerance(4.0).setDeg(-90.0)
+                Point(20.0, 71.5 * linearadjust, "lift_down").setDeg(-90.0),
+                Point(17.0, 75.5git stauts
+                        * linearadjust).setTolerance(4.0).setDeg(-90.0)
             )
             eventListener.state.set(Simple_events.AutoStates.PICKUP_READY)
             while(instance.opModeIsActive() && eventListener.state.get() != Simple_events.AutoStates.PICKUP){
