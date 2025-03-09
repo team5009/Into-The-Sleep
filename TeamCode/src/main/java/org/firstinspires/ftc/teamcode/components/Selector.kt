@@ -10,6 +10,10 @@ class Selector(private val instance : LinearOpMode){
 
     var delay = 0L
 
+    val which_alliance = alliance.entries.lastIndex + 1
+    var alliance_index = 0
+    var alliance_name = alliance.RED
+
     var selector = 0
     val path_length = paths.entries.lastIndex + 1
     var path_index = 0
@@ -28,6 +32,15 @@ class Selector(private val instance : LinearOpMode){
             if(selectors.entries[selector] == selectors.PATH_NAME) {
                 path_name = paths.entries[path_index]
             }
+            if(selectors.entries[selector] == selectors.ALLIANCE){
+                alliance_name = alliance.entries[alliance_index]
+            }
+            if(selectors.entries[selector] == selectors.POSITION){
+                positions_names = positions.entries[positions_index]
+            }
+            if(selectors.entries[selector] == selectors.JOINT_SILVER){
+                is_silver = silver.entries[silver_index]
+            }
             a_pressed = true
             selector += 1
         } else if(!instance.gamepad1.a && a_pressed){
@@ -42,6 +55,17 @@ class Selector(private val instance : LinearOpMode){
     }
 
     fun scroll() {
+        if (selectors.entries[selector] == selectors.ALLIANCE){
+            if(instance.gamepad1.dpad_down && !d_pad_pressed){
+                d_pad_pressed = true
+                alliance_index = (alliance_index + 1) % which_alliance
+            } else if(instance.gamepad1.dpad_up && !d_pad_pressed){
+                d_pad_pressed = true
+                alliance_index = (alliance_index - 1) % which_alliance
+            } else if(!instance.gamepad1.dpad_up && !instance.gamepad1.dpad_down && d_pad_pressed) {
+                d_pad_pressed = false
+            }
+        }
         if(selectors.entries[selector] == selectors.PATH_NAME){
             if(instance.gamepad1.dpad_down && !d_pad_pressed){
                 d_pad_pressed = true
@@ -59,6 +83,8 @@ class Selector(private val instance : LinearOpMode){
             }else if(instance.gamepad1.dpad_up && !d_pad_pressed){
                 d_pad_pressed = true
                 positions_index = (positions_length - 1) % positions_length
+            } else if(!instance.gamepad1.dpad_up && !instance.gamepad1.dpad_down && d_pad_pressed) {
+                d_pad_pressed = false
             }
         }else if(selectors.entries[selector] == selectors.JOINT_SILVER){
             if(instance.gamepad1.dpad_down && !d_pad_pressed){
@@ -67,6 +93,8 @@ class Selector(private val instance : LinearOpMode){
             }else if(instance.gamepad1.dpad_up && !d_pad_pressed){
                 d_pad_pressed = true
                 silver_index = (silver_index - 1) % silver_length
+            } else if(!instance.gamepad1.dpad_up && !instance.gamepad1.dpad_down && d_pad_pressed) {
+                d_pad_pressed = false
             }
         } else if(selectors.entries[selector] == selectors.DELAY) {
             if(instance.gamepad1.dpad_down && !d_pad_pressed){
@@ -80,7 +108,10 @@ class Selector(private val instance : LinearOpMode){
             }
         }
     }
-
+    enum class alliance {
+        RED,
+        BLUE
+    }
     enum class paths {
         AUTO_CHAMBER,
         AUTO_SAMPLE
@@ -95,6 +126,7 @@ class Selector(private val instance : LinearOpMode){
         NO
     }
     enum class selectors {
+        ALLIANCE,
         PATH_NAME,
         POSITION,
         JOINT_SILVER,

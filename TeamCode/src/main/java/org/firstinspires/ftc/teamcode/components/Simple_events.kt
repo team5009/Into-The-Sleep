@@ -2,18 +2,25 @@ package org.firstinspires.ftc.teamcode.instances.auto
 
 import ca.helios5009.hyperion.misc.events.EventListener
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.util.ElapsedTime
 import kotlinx.coroutines.delay
 import org.firstinspires.ftc.teamcode.components.Arm_v2
-import org.firstinspires.ftc.teamcode.components.Color_Sensor
 import org.firstinspires.ftc.teamcode.components.My_Color_Sensor
+import org.firstinspires.ftc.teamcode.components.Selector
 import java.util.concurrent.atomic.AtomicReference
 
-class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
+class Simple_events (instance:LinearOpMode, private val s : Selector, private val arm : Arm_v2) {
     val listener = EventListener()
     val state = AtomicReference(AutoStates.START)
     val color = My_Color_Sensor(instance)
+    val time_out = ElapsedTime()
+    var first = true
     init {
+        val alliance = if(s.alliance_name == Selector.alliance.RED){
+            "RED"
+        }else{
+            "BLUE"
+        }
         listener.addListener("start_sample") {
             arm.wrist_servos(0.25,0.25)
             Arm_v2.gear_target.set(0.0)
@@ -51,12 +58,16 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
                 delay(100)
             }
             arm.wrist_servos(0.08, 0.08)
-            delay(300)
+            if(first == true){
+                delay(500)
+            }
+            //delay(100)
             arm.intake_servos(-1.0)
-            delay(500)
-//            while (instance.opModeIsActive() && color.dist() < 2.5){
-//                delay(10)
-//            }
+            //delay(500)
+            while (instance.opModeIsActive() && color.dist() < 1.5){
+                delay(10)
+            }
+            delay(260)
             arm.wrist_servos(0.45, 0.45)
             delay(200)
             arm.intake_servos(0.0)
@@ -76,21 +87,36 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
         }
         listener.addListener("lift_down_final") {
             Arm_v2.grav.set(false)
-            Arm_v2.gear_target.set(70.0)
-            Arm_v2.slide_target.set(10.0)
+            Arm_v2.gear_target.set(20.0)
+            Arm_v2.slide_target.set(6.0)
             "pick_up"
         }
+        listener.addListener("lift_down_!time") {
+            Arm_v2.grav.set(false)
+            Arm_v2.gear_target.set(0.0)
+            Arm_v2.slide_target.set(6.0)
+            "_"
+        }
         listener.addListener("pick_up") {
-            while(instance.opModeIsActive() && state.get() != AutoStates.PICKUP_READY){
+            time_out.reset()
+            while(instance.opModeIsActive() && state.get() != AutoStates.PICKUP_READY && time_out.milliseconds() < 1000.0){
                 delay(100)
+            }
+            if(first == true){
+                delay(800)
+                first = false
             }
             Arm_v2.grav.set(true)
             //arm.wrist_servos(0.45,0.45)
             arm.intake_servos(1.0)
-            delay(900)
-//            while (instance.opModeIsActive() && color.dist() > 2.5){
-//                delay(10)
-//            }
+            //delay(900)
+            time_out.reset()
+            do {
+                while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 900.0){
+                    delay(10)
+                }
+            } while (instance.opModeIsActive() && color.dist() > 3.0 && (color.sensor() == "YELLOW" || color.sensor() == alliance))
+            delay(100)
             Arm_v2.grav.set(false)
             Arm_v2.gear_target.set(40.0)
             delay(300)
@@ -101,7 +127,7 @@ class Simple_events (instance:LinearOpMode, private val arm : Arm_v2) {
         listener.addListener("ascend") {
             state.set(AutoStates.PARK)
             arm.park_auto(0.5)
-            Arm_v2.gear_target.set(70.0)
+            Arm_v2.gear_target.set(20.0)
             Arm_v2.slide_target.set(8.0)
             "_"
         }

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.components.Arm_v2
+import org.firstinspires.ftc.teamcode.components.My_Color_Sensor
 import kotlin.math.abs
 
 @TeleOp(name = "Wrist test")
@@ -14,6 +15,7 @@ class Wrist_positions_test: LinearOpMode() {
 		val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
 		motors.setPowerRatio(1.0)
 		val arm = Arm_v2(this)
+		val s = My_Color_Sensor(this)
 		var left = 0.0
 		var right = 0.0
 		var drive = 0.0
@@ -99,6 +101,8 @@ class Wrist_positions_test: LinearOpMode() {
 			telemetry.addData("right", right)
 			telemetry.addData("left", left)
 			telemetry.addData("Gear angle", arm.gear_angle())
+			telemetry.addData("distance", s.dist())
+			telemetry.addData("color", s.sensor())
 			telemetry.update()
 		}
 	}
