@@ -102,7 +102,7 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
             while(instance.opModeIsActive() && state.get() != AutoStates.PICKUP_READY && time_out.milliseconds() < 1000.0){
                 delay(100)
             }
-            if(first == true){
+            if(first == true && s.is_silver == Selector.silver.YES){
                 delay(800)
                 first = false
             }
@@ -115,7 +115,7 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
                 while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 900.0){
                     delay(10)
                 }
-            } while (instance.opModeIsActive() && color.dist() > 3.0 && (color.sensor() == "YELLOW" || color.sensor() == alliance))
+            } while (instance.opModeIsActive() && color.dist() > 3.0 && time_out.milliseconds() < 900.0 && (color.sensor() == "YELLOW" || color.sensor() == alliance))
             delay(100)
             Arm_v2.grav.set(false)
             Arm_v2.gear_target.set(40.0)
@@ -131,22 +131,39 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
             Arm_v2.slide_target.set(8.0)
             "_"
         }
-        listener.addListener("sub_pick_up") {
-            while(instance.opModeIsActive() && state.get() != AutoStates.SUB_PICK){
-                delay(100)
-            }
+        listener.addListener("sub_lift_down"){
             Arm_v2.grav.set(false)
-//            while (state.get() == AutoStates.SUB_PICK){
-//                delay(10)
-//            }
+            Arm_v2.gear_target.set(65.0)
+            Arm_v2.slide_target.set(7.0)
+            "_"
+        }
+        listener.addListener("sub_pick_up") {
+            Arm_v2.grav.set(false)
+            while (instance.opModeIsActive() && state.get() != AutoStates.SUB_PICK_READY){
+                delay(10)
+            }
+            arm.sweeper(0.0)
             arm.intake_servos(1.0)
             Arm_v2.grav.set(true)
-            delay(500)
-//            while(instance.opModeIsActive() && color.dist() > 2.5){
-//                delay(10)
-//            }
+            time_out.reset()
+            do {
+                while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 900.0){
+                    delay(10)
+                }
+            } while (instance.opModeIsActive()
+                && color.dist() > 2.5
+                && time_out.milliseconds() > 200.0
+                && (color.sensor() == "YELLOW" || color.sensor() == alliance)
+            )
+            if(color.sensor() != "YELLOW" || color.sensor() != alliance){
+                arm.intake_servos(-1.0)
+                Arm_v2.grav.set(false)
+                delay(1000)
+            }
             arm.intake_servos(0.0)
-            state.set(AutoStates.PICKUP)
+            Arm_v2.grav.set(false)
+            Arm_v2.gear_target.set(65.0)
+            state.set(AutoStates.SUB_PICK)
             "sub_picked_up"
         }
     }
@@ -157,6 +174,7 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
         PICKUP,
         PICKUP_READY,
         PARK,
-        SUB_PICK
+        SUB_PICK,
+        SUB_PICK_READY
     }
 }

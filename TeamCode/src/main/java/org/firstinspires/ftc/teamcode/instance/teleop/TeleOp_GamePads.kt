@@ -66,7 +66,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
 
         // HANG
         if (gamepad1.dpad_down){
-            Arm_v2.gear_target.set(-25.0)
+            Arm_v2.gear_target.set(-20.0)
             Arm_v2.slide_target.set(12.0)
             arm.wrist_servos(0.45, 0.45)
         }
@@ -191,7 +191,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         if (gamepad2.a && !gamepad2.start && !a2_pressed && armState != Arm_v2.ArmState.HIGH_BASKET) {
             //sample pick up from submersible
             Arm_v2.gear_target.set(70.0 + offset)
-            Arm_v2.slide_target.set(7.0)
+            Arm_v2.slide_target.set(10.0)
             arm.wrist_servos(0.45, 0.45)
             manual_slide = true
             manual_wrist = true
@@ -208,7 +208,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         if(gamepad2.dpad_down){
             arm.sweeper(0.0)
         }else if(gamepad2.dpad_up){
-            arm.sweeper(0.25)
+            arm.sweeper(0.5)
         }else{
             arm.sweeper(0.75)
         }

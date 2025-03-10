@@ -5,12 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Robot
 import org.firstinspires.ftc.teamcode.components.Arm_v2
+import org.firstinspires.ftc.teamcode.components.Selector
 import org.firstinspires.ftc.teamcode.instances.auto.Simple_events
 import org.firstinspires.ftc.teamcode.instances.auto.Simple_events_Chambers
 
 class Auto_Chamber_Quals (private val instance : LinearOpMode, private val arm : Arm_v2) {
-    val eventListener = Simple_events_Chambers(instance, arm)
-    fun run(timer: ElapsedTime) {
+
+    fun run(timer: ElapsedTime, s : Selector) {
+        val eventListener = Simple_events_Chambers(instance, s, arm)
         val bot = Robot(instance, eventListener.listener, true)
         val linearadjust = 1.0
         bot.path.start(Point(11.0, 63.0 * linearadjust, "start_sample").setDeg(0.0))//start

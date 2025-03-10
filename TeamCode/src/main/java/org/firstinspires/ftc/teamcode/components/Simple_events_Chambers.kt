@@ -3,21 +3,32 @@ package org.firstinspires.ftc.teamcode.instances.auto
 import ca.helios5009.hyperion.misc.events.EventListener
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.util.ElapsedTime
 import kotlinx.coroutines.delay
 import org.firstinspires.ftc.teamcode.components.Arm_v2
 import org.firstinspires.ftc.teamcode.components.Color_Sensor
 import org.firstinspires.ftc.teamcode.components.My_Color_Sensor
+import org.firstinspires.ftc.teamcode.components.Selector
+import org.firstinspires.ftc.teamcode.instances.auto.Simple_events.AutoStates
 import java.util.concurrent.atomic.AtomicReference
 
-class Simple_events_Chambers (instance:LinearOpMode, private val arm : Arm_v2) {
+class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, private val arm : Arm_v2) {
     val listener = EventListener()
     val states = AtomicReference(ChamberStates.START)
+    val color = My_Color_Sensor(instance)
+    val time_out = ElapsedTime()
+    var first = true
     init {
         arm.init_auto()
-
+        val alliance = if(s.alliance_name == Selector.alliance.RED){
+            "RED"
+        }else{
+            "BLUE"
+        }
         listener.addListener("start_sample") {
-            arm.wrist_servos(0.96, 0.96)
+            arm.wrist_servos(0.08, 0.08)
             Arm_v2.gear_target.set(0.0)
+            delay(500)
             Arm_v2.grav.set(true)
             arm.go_to_target()
             Arm_v2.grav.set(false)
@@ -25,140 +36,126 @@ class Simple_events_Chambers (instance:LinearOpMode, private val arm : Arm_v2) {
                 arm.go_to_target(gear_is_on = !Arm_v2.grav.get())
             }
             Arm_v2.grav.set(false)
-            states.set(ChamberStates.READY)
             "started"
         }
-        listener.addListener("set_gear") {
-            Arm_v2.grav.set(false)
-            Arm_v2.gear_target.set(-9.0)
-            Arm_v2.slide_target.set(8.0)
-            arm.wrist_servos(0.34, 0.34)
+        listener.addListener("set_first") {
+            Arm_v2.gear_target.set(60.0)
+            delay(500)
+            Arm_v2.gear_target.set(15.0)
+            delay(500)
+            Arm_v2.slide_target.set(13.0)
+            arm.intake_servos(-0.4)
+            while(instance.opModeIsActive() && color.dist() < 1.5){
+                delay(10)
+            }
+            arm.intake_servos(0.0)
+            arm.wrist_servos(0.4, 0.4)
             "drop_arm"
         }
         listener.addListener("drop_arm") {
             if(instance.opModeIsActive() && states.get() != ChamberStates.CLIP_READY){
                 delay(100)
             }
-            Arm_v2.gear_target.set(-9.0)
-            Arm_v2.slide_target.set(3.0)
-            delay(500)
-            arm.intake_servos(1.0)
-            delay(700)
+            Arm_v2.grav.set(true)
+            Arm_v2.slide_target.set(6.0)
+            delay(800)
+            arm.intake_servos(-1.0)
+            while(instance.opModeIsActive() && color.dist() > 3.0){
+                delay(10)
+            }
+            delay(200)
             Arm_v2.grav.set(false)
             states.set(ChamberStates.CLIPPED)
             "picked_up"
         }
         listener.addListener("push") {
-            Arm_v2.gear_target.set(90.0)
-            Arm_v2.slide_target.set(7.0)
-            arm.wrist_servos(0.96, 0.96)
-            "pushing"
+            states.set(ChamberStates.PUSH)
+            Arm_v2.gear_target.set(0.0)
+            Arm_v2.slide_target.set(6.0)
+            arm.sweeper(0.25)
+            "un_push"
         }
-
-        listener.addListener("chamber_up") {
-            arm.wrist_servos(0.4,0.4)
-            //arm.intake_servos(-0.2)
-            Arm_v2.slide_target.set(7.0)
-            Arm_v2.gear_target.set(58.0)
-            delay(1200)
-            Arm_v2.grav.set(true)
-            //arm.intake_servos(0.0)
-            "chamber_ready"
-        }
-
-        listener.addListener("first_score_chamber") {
-            Arm_v2.slide_target.set(Arm_v2.slide_target.get() -1.5)
-            arm.wrist_servos(0.5,0.5)
-            delay(700)
-            Arm_v2.slide_target.set(3.0)
-            delay(1200)
-            /*while(arm.slide.getPosition() / arm.slide_inches_ticks > 4.0) {
-                delay(50)
-            }*/
-            Arm_v2.grav.set(false)
-            Arm_v2.slide_target.set(1.0)
-            arm.intake_servos(-1.0)
-            delay(600)
-            arm.intake_servos(0.0)
-            "first_score"
-        }
-
-        listener.addListener("score_chamber") {
-            arm.intake_servos(-0.2)
-            Arm_v2.slide_target.set(Arm_v2.slide_target.get() - 5.0)
-            delay(800)
-            /*while(arm.slide.getPosition() / arm.slide_inches_ticks > 2.0) {
-                delay(50)
-            }*/
-            arm.intake_servos(0.8)
-            "score"
-        }
-
-        listener.addListener("arm_off") {
-            Arm_v2.slide_target.set(4.0)
-            Arm_v2.gear_target.set(45.0)
-            delay(1000)
-            arm.intake_servos(0.2)
-            delay(800)
-            arm.intake_servos(0.0)
-            "disarmed"
-        }
-
-        listener.addListener("ready_arm") {
-            arm.wrist_servos(0.15, 0.15)
-            Arm_v2.grav.set(false)
-            Arm_v2.gear_target.set(60.0)
-            delay(1200)
-            Arm_v2.gear_target.set(75.0)
-            Arm_v2.slide_target.set(2.0)
-            while(arm.gear_r.position / arm.gear_degrees_ticks < 65.0) {
-                delay(50)
+        listener.addListener("half_push"){
+            states.set(ChamberStates.PUSH)
+            Arm_v2.gear_target.set(70.0)
+            Arm_v2.slide_target.set(8.0)
+            arm.sweeper(0.5)
+            while (states.get() == ChamberStates.PUSHED){
+                delay(10)
             }
-            "arm_hover"
+            "push"
         }
-
-        listener.addListener("_drop_arm") {
-            arm.intake_servos(0.8)
+        listener.addListener("un_push") {
+            delay(300)
+            while (states.get() == ChamberStates.PUSHED){
+                delay(10)
+            }
+            arm.sweeper(0.0)
+            delay(500)
+            arm.sweeper(0.75)
+            "un_pushed"
+        }
+        listener.addListener("set_pick_up"){
+            Arm_v2.gear_target.set(70.0)
+            Arm_v2.slide_target.set(8.0)
+            arm.wrist_servos(0.45, 0.45)
+            ""
+        }
+        listener.addListener("pick_up") {
+            time_out.reset()
+            while(instance.opModeIsActive() && states.get() != ChamberStates.PICKUP_READY && time_out.milliseconds() < 1000.0){
+                delay(100)
+            }
             Arm_v2.grav.set(true)
-            delay(1500)
-            arm.intake_servos(0.0)
+            //arm.wrist_servos(0.45,0.45)
+            arm.intake_servos(1.0)
+            //delay(900)
+            time_out.reset()
+            do {
+                while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 900.0){
+                    delay(10)
+                }
+            } while (instance.opModeIsActive() && color.dist() > 3.0 && color.sensor() == alliance)
+            delay(100)
             Arm_v2.grav.set(false)
-            delay(200)
+            Arm_v2.gear_target.set(40.0)
+            delay(300)
+            states.set(ChamberStates.PICKUP)
+            Arm_v2.gear_target.set(0.0)
+            Arm_v2.slide_target.set(6.0)
+            arm.intake_servos(-0.4)
+            while(instance.opModeIsActive() && color.dist() < 1.5){
+                delay(10)
+            }
+            arm.intake_servos(0.0)
             "picked_up"
         }
-
-        listener.addListener("arm_up") {
-            arm.intake_servos(0.0)
-            arm.wrist_servos(0.45,0.45)
-            "up_arm"
-        }
-        listener.addListener("drop") {
-            Arm_v2.gear_target.set(55.0)
-            delay(1000)
-            //arm.intake_servos(-1.0)
-            //delay(1000)
-            "dropping"
-        }
-        listener.addListener("drop_done") {
-            Arm_v2.gear_target.set(57.0)
-            delay(1000)
-            Arm_v2.slide_target.set(4.0)
-            arm.intake_servos(-0.3)
-            Arm_v2.grav.set(true)
-            delay(2500)
-            arm.intake_servos(-0.8)
-            Arm_v2.gear_target.set(47.0)
-            arm.intake_servos(0.0)
+        listener.addListener("set_gear") {
             Arm_v2.grav.set(false)
-            "ahh"
+            Arm_v2.gear_target.set(-4.0)
+            Arm_v2.slide_target.set(10.0)
+            arm.intake_servos(-0.4)
+            while(instance.opModeIsActive() && color.dist() < 1.5){
+                delay(10)
+            }
+            arm.intake_servos(0.0)
+            arm.wrist_servos(0.08, 0.08)
+            while(states.get() == ChamberStates.CLIP_READY){
+                delay(10)
+            }
+            Arm_v2.gear_target.set(-13.0)
+            delay(500)
+            "drop_arm"
         }
         listener.addListener("lift_down") {
-            Arm_v2.gear_target.set(40.0)
-            Arm_v2.slide_target.set(3.0)
+            Arm_v2.gear_target.set(0.0)
+            Arm_v2.slide_target.set(7.0)
             "_"
         }
         listener.addListener("ascend") {
-            Arm_v2.gear_target.set(55.0)
+            states.set(ChamberStates.PARK)
+            Arm_v2.gear_target.set(0.0)
+            Arm_v2.slide_target.set(7.0)
             "_"
         }
     }
@@ -168,6 +165,7 @@ class Simple_events_Chambers (instance:LinearOpMode, private val arm : Arm_v2) {
         CLIP_READY,
         CLIPPED,
         PUSH,
+        PUSHED,
         PICKUP,
         PICKUP_READY,
         PARK

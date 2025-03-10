@@ -67,7 +67,7 @@ class Menu : LinearOpMode() {
         if(s.path_name == Selector.paths.AUTO_SAMPLE) {
             Auto_Sample_Quals(this, arm).run(timer, s)
         } else if(s.path_name == Selector.paths.AUTO_CHAMBER) {
-            Auto_Chamber_Quals(this, arm).run(timer)
+            Auto_Chamber_Champ(this, arm).run(timer, s)
         }
     }
 
