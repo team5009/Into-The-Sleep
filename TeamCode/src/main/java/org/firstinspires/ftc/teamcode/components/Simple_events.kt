@@ -142,7 +142,9 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
             while (instance.opModeIsActive() && state.get() != AutoStates.SUB_PICK_READY){
                 delay(10)
             }
-            arm.sweeper(0.0)
+            arm.sweeper(0.45)
+            delay(500)
+            arm.sweeper(0.75)
             arm.intake_servos(1.0)
             Arm_v2.grav.set(true)
             time_out.reset()

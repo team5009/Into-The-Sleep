@@ -53,7 +53,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         }else if(!gamepad1.cross && armState == Arm_v2.ArmState.SUBMERSIBLE  && this.x_pressed){
             Arm_v2.grav.set(false)
             Arm_v2.gear_target.set(60.0)
-            Arm_v2.slide_target.set(7.0)
+            Arm_v2.slide_target.set(9.0)
             this.x_pressed = false
         }
 
@@ -70,78 +70,79 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             Arm_v2.slide_target.set(12.0)
             arm.wrist_servos(0.45, 0.45)
         }
+/*
+        if(gamepad1.ps){
+            end_game_mode = true
+            Arm_v2.grav.set(true)
+            while (instance.opModeIsActive() && end_game_mode) {
+                if (gamepad1.right_bumper) {
+                    arm.gear_r.power = -1.0
+                    arm.gear_l.power = -1.0
+                } else if (gamepad1.left_bumper) {
+                    arm.gear_r.power = 1.0
+                    arm.gear_l.power = 1.0
+                } else {
+                    arm.gear_r.power = 0.0
+                    arm.gear_l.power = 0.0
+                }
+                if (gamepad1.dpad_up && !dpad_up) {
+                    arm.slide_r.power = -1.0
+                    arm.slide_l.power = -1.0
+                } else if (gamepad1.cross){
+                    arm.slide_r.power = 0.0
+                    arm.slide_l.power = 0.0
+                }
+                if(gamepad2.start){
+                    end_game_mode = false
+                    arm.gear_r.power = 0.0
+                    arm.gear_l.power = 0.0
+                    arm.slide_r.power = 0.0
+                    arm.slide_l.power = 0.0
+                }
+            }
+        }else if(gamepad1.ps && ps_pressed){
+            end_game_mode = false
+            Arm_v2.grav.set(false)
+        }
 
-//        if(gamepad1.ps){
-//            end_game_mode = true
-//            Arm_v2.grav.set(true)
-//            while (instance.opModeIsActive() && end_game_mode) {
-//                if (gamepad1.right_bumper) {
-//                    arm.gear_r.power = -1.0
-//                    arm.gear_l.power = -1.0
-//                } else if (gamepad1.left_bumper) {
-//                    arm.gear_r.power = 1.0
-//                    arm.gear_l.power = 1.0
-//                } else {
-//                    arm.gear_r.power = 0.0
-//                    arm.gear_l.power = 0.0
-//                }
-//                if (gamepad1.dpad_up && !dpad_up) {
-//                    arm.slide_r.power = -1.0
-//                    arm.slide_l.power = -1.0
-//                } else if (gamepad1.cross){
-//                    arm.slide_r.power = 0.0
-//                    arm.slide_l.power = 0.0
-//                }
-//                if(gamepad2.start){
-//                    end_game_mode = false
-//                    arm.gear_r.power = 0.0
-//                    arm.gear_l.power = 0.0
-//                    arm.slide_r.power = 0.0
-//                    arm.slide_l.power = 0.0
-//                }
-//            }
-//        }else if(gamepad1.ps && ps_pressed){
-//            end_game_mode = false
-//            Arm_v2.grav.set(false)
-//        }
 
+         ARM DOWN
+        if (armState == Arm_v2.ArmState.SUBMERSIBLE && gamepad1.a && !gamepad1.start && !a1_pressed) {
+            Arm_v2.grav.set(true)
+            arm.wrist_servos(0.45, 0.45)
+            a1_pressed = true
+        } else if (gamepad1.cross && !gamepad1.start && !a1_pressed) {
+            Arm_v2.grav.set(true)
+            a1_pressed = true
+        } else if (!gamepad1.cross && !gamepad1.start && armState == Arm_v2.ArmState.SUBMERSIBLE && a1_pressed) {
+            Arm_v2.grav.set(false)
+            a1_pressed = false
+        } else if (!gamepad1.cross && a1_pressed && !gamepad1.start) {
+            a1_pressed = false
+            Arm_v2.grav.set(false)
+        }
+        if(gamepad1.triangle && armState == Arm_v2.ArmState.SUBMERSIBLE){
+            arm.wrist_servos(0.1, 0.1 )
+        }
 
-        // ARM DOWN
-//        if (armState == Arm_v2.ArmState.SUBMERSIBLE && gamepad1.a && !gamepad1.start && !a1_pressed) {
-//            Arm_v2.grav.set(true)
-//            arm.wrist_servos(0.45, 0.45)
-//            a1_pressed = true
-//        } else if (gamepad1.cross && !gamepad1.start && !a1_pressed) {
-//            Arm_v2.grav.set(true)
-//            a1_pressed = true
-//        } else if (!gamepad1.cross && !gamepad1.start && armState == Arm_v2.ArmState.SUBMERSIBLE && a1_pressed) {
-//            Arm_v2.grav.set(false)
-//            a1_pressed = false
-//        } else if (!gamepad1.cross && a1_pressed && !gamepad1.start) {
-//            a1_pressed = false
-//            Arm_v2.grav.set(false)
-//        }
-//        if(gamepad1.triangle && armState == Arm_v2.ArmState.SUBMERSIBLE){
-//            arm.wrist_servos(0.1, 0.1 )
-//        }
+         MANUAL GEAR MOVEMENT
+        if (gamepad1.right_bumper && !Arm_v2.grav.get()) {
+            //Arm_v2.slide_target.set(0.7)
+            arm.slide_l.power = 0.9
+            arm.slide_r.power = 0.9
+            //Arm_v2.gear_target.set(Range.clip(Arm_v2.gear_target.get() + 0.1, 20.0, 125.0))
+        } else if (gamepad1.left_bumper && !Arm_v2.grav.get()) {
+            //Arm_v2.gear_target.set(Range.clip(Arm_v2.gear_target.get() - 0.1, 20.0, 125.0))
+            //Arm_v2.slide_target.set(-0.7)
+            arm.slide_r.power = -0.9
+            arm.slide_l.power = -0.9
+        }else {
+            //Arm_v2.slide_target.set(0.0)
+            arm.slide_r.power = 0.0
+            arm.slide_l.power = 0.0
 
-        // MANUAL GEAR MOVEMENT
-//        if (gamepad1.right_bumper && !Arm_v2.grav.get()) {
-//            //Arm_v2.slide_target.set(0.7)
-//            arm.slide_l.power = 0.9
-//            arm.slide_r.power = 0.9
-//            //Arm_v2.gear_target.set(Range.clip(Arm_v2.gear_target.get() + 0.1, 20.0, 125.0))
-//        } else if (gamepad1.left_bumper && !Arm_v2.grav.get()) {
-//            //Arm_v2.gear_target.set(Range.clip(Arm_v2.gear_target.get() - 0.1, 20.0, 125.0))
-//            //Arm_v2.slide_target.set(-0.7)
-//            arm.slide_r.power = -0.9
-//            arm.slide_l.power = -0.9
-//        }else {
-//            //Arm_v2.slide_target.set(0.0)
-//            arm.slide_r.power = 0.0
-//            arm.slide_l.power = 0.0
-//
-//        }
+        }
+*/
     }
 
     fun game_pad_2() {
@@ -191,7 +192,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         if (gamepad2.a && !gamepad2.start && !a2_pressed && armState != Arm_v2.ArmState.HIGH_BASKET) {
             //sample pick up from submersible
             Arm_v2.gear_target.set(70.0 + offset)
-            Arm_v2.slide_target.set(10.0)
+            Arm_v2.slide_target.set(11.0)
             arm.wrist_servos(0.45, 0.45)
             manual_slide = true
             manual_wrist = true
@@ -213,59 +214,59 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             arm.sweeper(0.75)
         }
 
-        // CHAMBERS
-//        if (gamepad2.x && !x_pressed && armState != Arm_v2.ArmState.HIGH_BASKET) {
-//            //high chamber for specimens
-//            if (armState == Arm_v2.ArmState.HIGH_CHAMBER) {
-//                //high chamber scoring
-//                Arm_v2.gear_target.set(65.0 + offset)
-//                Arm_v2.slide_target.set(1.0)
-//                armState = Arm_v2.ArmState.HIGH_CHAMBER_SCORE
-//            } else {
-//                //high chamber
-//                Arm_v2.gear_target.set(55.0 + offset)
-//                Arm_v2.slide_target.set(8.5)
-//                arm.wrist_servos(0.4, 0.4)
-//                armState = Arm_v2.ArmState.HIGH_CHAMBER
-//            }
-//            Arm_v2.free_slide.set(false)
-//            Arm_v2.grav.set(false)
-//            x_pressed = true
-//        } else if (!gamepad2.x && x_pressed) {
-//            x_pressed = false
-//        }
-
-        // LOW CHAMBERS
-//        if (gamepad2.b && !gamepad2.start && !b_pressed && armState != Arm_v2.ArmState.HIGH_BASKET) {
-//            //high chamber for specimens
-//            if (armState == Arm_v2.ArmState.LOW_CHAMBER) {
-//                //low chamber score
-//                Arm_v2.gear_target.set(100.0 + offset)
-//                Arm_v2.slide_target.set(0.4)
-//                Arm_v2.ArmState.LOW_CHAMBER_SCORE
-//            } else {
-//                //low chamber
-//                Arm_v2.gear_target.set(95.0 + offset)
-//                Arm_v2.slide_target.set(5.0)
-//                arm.wrist_servos(0.45, 0.45)
-//                armState = Arm_v2.ArmState.LOW_CHAMBER
-//            }
-//            Arm_v2.free_slide.set(false)
-//            Arm_v2.grav.set(false)
-//            b_pressed = true
-//        } else if (!gamepad2.b && b_pressed) {
-//            b_pressed = false
-//        }
-
-
         // INTAKE SERVOS
         if (gamepad2.right_bumper) {
-            arm.intake_servos(-1.0)  //outake
+            arm.intake_servos(1.0)  //outake
         } else if (gamepad2.left_bumper) {
-            arm.intake_servos(1.0)
+            arm.intake_servos(-1.0)
         } else {
             arm.intake_servos(0.0)
         }
+        //CHAMBERS
+        /*if (gamepad2.x && !x_pressed && armState != Arm_v2.ArmState.HIGH_BASKET) {
+            //high chamber for specimens
+            if (armState == Arm_v2.ArmState.HIGH_CHAMBER) {
+                //high chamber scoring
+                Arm_v2.gear_target.set(65.0 + offset)
+                Arm_v2.slide_target.set(1.0)
+                armState = Arm_v2.ArmState.HIGH_CHAMBER_SCORE
+            } else {
+                //high chamber
+                Arm_v2.gear_target.set(55.0 + offset)
+                Arm_v2.slide_target.set(8.5)
+                arm.wrist_servos(0.4, 0.4)
+                armState = Arm_v2.ArmState.HIGH_CHAMBER
+            }
+            Arm_v2.free_slide.set(false)
+            Arm_v2.grav.set(false)
+            x_pressed = true
+        } else if (!gamepad2.x && x_pressed) {
+            x_pressed = false
+        }*/
+
+         //LOW CHAMBERS
+        /*if (gamepad2.b && !gamepad2.start && !b_pressed && armState != Arm_v2.ArmState.HIGH_BASKET) {
+            //high chamber for specimens
+            if (armState == Arm_v2.ArmState.LOW_CHAMBER) {
+                //low chamber score
+                Arm_v2.gear_target.set(100.0 + offset)
+                Arm_v2.slide_target.set(0.4)
+                Arm_v2.ArmState.LOW_CHAMBER_SCORE
+            } else {
+                //low chamber
+                Arm_v2.gear_target.set(95.0 + offset)
+                Arm_v2.slide_target.set(5.0)
+                arm.wrist_servos(0.45, 0.45)
+                armState = Arm_v2.ArmState.LOW_CHAMBER
+            }
+            Arm_v2.free_slide.set(false)
+            Arm_v2.grav.set(false)
+            b_pressed = true
+        } else if (!gamepad2.b && b_pressed) {
+            b_pressed = false
+        }*/
+
+
 
         // WRIST MOVEMENT
         /*if (gamepad2.dpad_up && manual_wrist) {

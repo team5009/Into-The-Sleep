@@ -28,6 +28,7 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
         listener.addListener("start_sample") {
             arm.wrist_servos(0.08, 0.08)
             Arm_v2.gear_target.set(0.0)
+            arm.sweeper(0.75)
             delay(500)
             Arm_v2.grav.set(true)
             arm.go_to_target()
@@ -40,16 +41,16 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
         }
         listener.addListener("set_first") {
             Arm_v2.gear_target.set(60.0)
-            delay(500)
-            Arm_v2.gear_target.set(15.0)
-            delay(500)
-            Arm_v2.slide_target.set(13.0)
+            Arm_v2.slide_target.set(6.0)
+            arm.wrist_servos(0.4, 0.4)
+            delay(800)
+            Arm_v2.gear_target.set(46.0)
             arm.intake_servos(-0.4)
             while(instance.opModeIsActive() && color.dist() < 1.5){
                 delay(10)
             }
             arm.intake_servos(0.0)
-            arm.wrist_servos(0.4, 0.4)
+            delay(500)
             "drop_arm"
         }
         listener.addListener("drop_arm") {
@@ -57,14 +58,16 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
                 delay(100)
             }
             Arm_v2.grav.set(true)
-            Arm_v2.slide_target.set(6.0)
+            delay(800)
+            Arm_v2.slide_target.set(3.0)
             delay(800)
             arm.intake_servos(-1.0)
-            while(instance.opModeIsActive() && color.dist() > 3.0){
+            while(instance.opModeIsActive() && color.dist() > 3.0 && color.sensor() == alliance){
                 delay(10)
             }
-            delay(200)
             Arm_v2.grav.set(false)
+            delay(200)
+            arm.intake_servos(0.0)
             states.set(ChamberStates.CLIPPED)
             "picked_up"
         }
@@ -90,6 +93,7 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
             while (states.get() == ChamberStates.PUSHED){
                 delay(10)
             }
+            delay(600)
             arm.sweeper(0.0)
             delay(500)
             arm.sweeper(0.75)
@@ -97,32 +101,33 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
         }
         listener.addListener("set_pick_up"){
             Arm_v2.gear_target.set(70.0)
-            Arm_v2.slide_target.set(8.0)
+            Arm_v2.slide_target.set(6.0)
             arm.wrist_servos(0.45, 0.45)
             ""
         }
         listener.addListener("pick_up") {
-            time_out.reset()
-            while(instance.opModeIsActive() && states.get() != ChamberStates.PICKUP_READY && time_out.milliseconds() < 1000.0){
+            while(instance.opModeIsActive() && states.get() != ChamberStates.PICKUP_READY){
                 delay(100)
             }
             Arm_v2.grav.set(true)
-            //arm.wrist_servos(0.45,0.45)
+            arm.wrist_servos(0.45,0.45)
             arm.intake_servos(1.0)
-            //delay(900)
+            delay(900)
             time_out.reset()
             do {
-                while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 900.0){
+                while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 1500.0){
                     delay(10)
                 }
-            } while (instance.opModeIsActive() && color.dist() > 3.0 && color.sensor() == alliance)
+            } while (instance.opModeIsActive() && color.dist() > 3.0 && color.sensor() == alliance || time_out.milliseconds() < 400)
             delay(100)
-            Arm_v2.grav.set(false)
             Arm_v2.gear_target.set(40.0)
-            delay(300)
-            states.set(ChamberStates.PICKUP)
-            Arm_v2.gear_target.set(0.0)
+            Arm_v2.grav.set(false)
+            Arm_v2.gear_target.set(30.0)
             Arm_v2.slide_target.set(6.0)
+            while(arm.gear_angle() > 40.0) {
+                delay(100)
+            }
+            states.set(ChamberStates.PICKUP)
             arm.intake_servos(-0.4)
             while(instance.opModeIsActive() && color.dist() < 1.5){
                 delay(10)
@@ -131,19 +136,18 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
             "picked_up"
         }
         listener.addListener("set_gear") {
-            Arm_v2.grav.set(false)
-            Arm_v2.gear_target.set(-4.0)
-            Arm_v2.slide_target.set(10.0)
+            Arm_v2.gear_target.set(40.0)
+            Arm_v2.slide_target.set(7.0)
             arm.intake_servos(-0.4)
             while(instance.opModeIsActive() && color.dist() < 1.5){
                 delay(10)
             }
             arm.intake_servos(0.0)
             arm.wrist_servos(0.08, 0.08)
-            while(states.get() == ChamberStates.CLIP_READY){
+            while(states.get() != ChamberStates.CLIP_READY){
                 delay(10)
             }
-            Arm_v2.gear_target.set(-13.0)
+            Arm_v2.gear_target.set(10.0)
             delay(500)
             "drop_arm"
         }
