@@ -192,7 +192,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         if (gamepad2.a && !gamepad2.start && !a2_pressed && armState != Arm_v2.ArmState.HIGH_BASKET) {
             //sample pick up from submersible
             Arm_v2.gear_target.set(70.0 + offset)
-            Arm_v2.slide_target.set(11.0)
+            Arm_v2.slide_target.set(9.0)
             arm.wrist_servos(0.45, 0.45)
             manual_slide = true
             manual_wrist = true

@@ -78,6 +78,12 @@ class Wrist_positions_test: LinearOpMode() {
 					left -= 0.01
 				}
 			}
+			if (gamepad1.dpad_right){
+				arm.park_auto(0.5)
+			}else{
+				arm.park_auto(0.0)
+			}
+
 //			if (gamepad1.dpad_left) {
 //				if(right + left <= 1.10 && right < 1.0 && left > 0.0) {
 //					right += 0.01

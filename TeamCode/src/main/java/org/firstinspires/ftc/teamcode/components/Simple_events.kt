@@ -40,6 +40,7 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
                 delay(10)
             }
             Arm_v2.slide_target.set(23.0)
+            arm.park_auto(0.4)
             null
         }
         listener.addListener("arm_up") {
@@ -157,10 +158,26 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
                 && time_out.milliseconds() > 200.0
                 && (color.sensor() == "YELLOW" || color.sensor() == alliance)
             )
-            if(color.sensor() != "YELLOW" || color.sensor() != alliance){
+            if(color.sensor() != "YELLOW" || color.sensor() != alliance) {
                 arm.intake_servos(-1.0)
                 Arm_v2.grav.set(false)
                 delay(1000)
+                arm.intake_servos(1.0)
+                Arm_v2.grav.set(true)
+                time_out.reset()
+                do {
+                    while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 900.0) {
+                        delay(10)
+                    }
+                } while (instance.opModeIsActive()
+                    && color.dist() > 2.5
+                    && time_out.milliseconds() > 200.0
+                    && (color.sensor() == "YELLOW" || color.sensor() == alliance)
+                )
+                if(color.sensor() != "YELLOW" || color.sensor() != alliance){
+                    arm.intake_servos(-1.0)
+                    Arm_v2.grav.set(false)
+                }
             }
             arm.intake_servos(0.0)
             Arm_v2.grav.set(false)

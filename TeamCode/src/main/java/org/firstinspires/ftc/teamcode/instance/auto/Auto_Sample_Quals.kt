@@ -49,8 +49,8 @@ class Auto_Sample_Quals (private val instance : LinearOpMode, private val arm : 
         }
         //FIRST SAMPLE
         //pickup
-        bot.path.segment(Point(27.5, 116.0, "lift_down").setTolerance(4.0).setDeg(-5.0)
-                ,Point(24.5, 119.5 * linearadjust)
+        bot.path.segment(Point(25.5, 116.0, "lift_down").setTolerance(4.0).setDeg(-5.0)
+                ,Point(22.5, 119.5 * linearadjust)
         )
         eventListener.state.set(AutoStates.PICKUP_READY)
         while(instance.opModeIsActive() && eventListener.state.get() != AutoStates.PICKUP){
