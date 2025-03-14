@@ -39,10 +39,10 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
         }
         listener.addListener("set_first") {
             Arm_v2.gear_target.set(0.0)
-            Arm_v2.slide_target.set(6.0)
+            Arm_v2.slide_target.set(6.5)
             arm.wrist_servos(0.4, 0.4)
             delay(500)
-            Arm_v2.gear_target.set(15.0)
+            Arm_v2.gear_target.set(25.0)
             arm.intake_servos(-0.4)
             while(instance.opModeIsActive() && color.dist() < 1.5){
                 delay(10)
@@ -60,7 +60,7 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
             Arm_v2.slide_target.set(3.0)
             delay(400)
             arm.intake_servos(-1.0)
-            while(instance.opModeIsActive() && color.dist() > 3.0 && color.sensor() == alliance){
+            while(instance.opModeIsActive() && color.dist() < 3.0 && color.sensor() == alliance){
                 delay(10)
             }
             Arm_v2.grav.set(false)
@@ -71,20 +71,19 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
         }
         listener.addListener("push") {
             states.set(ChamberStates.PUSH)
-            Arm_v2.gear_target.set(0.0)
             Arm_v2.slide_target.set(6.0)
             arm.sweeper(0.25)
             "un_push"
         }
         listener.addListener("half_push"){
             states.set(ChamberStates.PUSH)
-            Arm_v2.gear_target.set(70.0)
+            Arm_v2.gear_target.set(60.0)
             Arm_v2.slide_target.set(5.0)
-            arm.sweeper(0.3)
+            arm.sweeper(0.4)
             while (instance.opModeIsActive() && states.get() == ChamberStates.PUSHED){
                 delay(10)
             }
-            "push"
+            "_"
         }
         listener.addListener("un_push") {
             delay(300)
@@ -113,7 +112,7 @@ class Simple_events_Chambers (instance:LinearOpMode, private val s : Selector, p
             delay(900)
             time_out.reset()
             do {
-                while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 1300.0){
+                while (instance.opModeIsActive() && color.dist() > 2.5 && time_out.milliseconds() < 900.0){
                     delay(10)
                 }
             } while (instance.opModeIsActive() && color.dist() > 3.0 && color.sensor() == alliance || time_out.milliseconds() < 400)

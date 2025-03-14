@@ -158,6 +158,7 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
                 && time_out.milliseconds() > 200.0
                 && (color.sensor() == "YELLOW" || color.sensor() == alliance)
             )
+            //TRY AGAIN
             if(color.sensor() != "YELLOW" || color.sensor() != alliance) {
                 arm.intake_servos(-1.0)
                 Arm_v2.grav.set(false)
@@ -194,6 +195,7 @@ class Simple_events (instance:LinearOpMode, private val s : Selector, private va
         PICKUP_READY,
         PARK,
         SUB_PICK,
-        SUB_PICK_READY
+        SUB_PICK_READY,
+        NOT_ALLIANCE
     }
 }

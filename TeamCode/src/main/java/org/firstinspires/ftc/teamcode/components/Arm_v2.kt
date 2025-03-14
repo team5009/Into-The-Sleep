@@ -62,6 +62,7 @@ class Arm_v2(private val instance: LinearOpMode) {
         slide_l.motor.direction = DcMotorSimple.Direction.REVERSE
         slide_r.motor.direction = DcMotorSimple.Direction.FORWARD
 
+        //DICTIONARY
         for (i in -30..30) {
             val rad : Double = (i*5.0) * PI / 180.0
             if (i >= 4.0) {
@@ -73,6 +74,7 @@ class Arm_v2(private val instance: LinearOpMode) {
             }
         }
     }
+    //ARM DOWN IN INIT
     fun manual_slide(gamepad: Gamepad) {
         if(gamepad.left_bumper){
             slide_r.power = -0.9
@@ -85,6 +87,7 @@ class Arm_v2(private val instance: LinearOpMode) {
             slide_l.power = 0.0
         }
     }
+    //INIT SEQUENCE
     fun init_auto() {
         slide_r.resetEncoder()
         slide_l.resetEncoder()
@@ -120,7 +123,7 @@ class Arm_v2(private val instance: LinearOpMode) {
     fun gear_angle() : Double {
         return gear_r.position.toDouble()/gear_degrees_ticks
     }
-
+    //FROM DICTIONARY TO GEAR TARGET
     fun closest_angle(angle : Double):Double {
         if(angle > 120.0) {
             return 120.0
@@ -129,7 +132,6 @@ class Arm_v2(private val instance: LinearOpMode) {
         }
         return 5.0 * (round(angle / 5.0))
     }
-
     fun go_to_target(gear_is_on:Boolean = true, slide_is_on:Boolean = true) {
         var gear_output = 0.0
         var slide_output = 0.0
@@ -150,18 +152,18 @@ class Arm_v2(private val instance: LinearOpMode) {
         }
 
         instance.telemetry.addData("Error Slide", slide_target.get() - slide_height())
-
-//        slide_output *= if(slide_output > 0.4) {
-//            slide_l.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-//            0.0
-//        } else if(slide_output < -0.6) {
-//            slide_l.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-//            0.8
-//        } else {
-//            slide_l.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-//            0.5
-//        }
-//
+/*
+        slide_output *= if(slide_output > 0.4) {
+            slide_l.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+            0.0
+        } else if(slide_output < -0.6) {
+            slide_l.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+            0.8
+        } else {
+            slide_l.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+            0.5
+        }
+*/
         gear_output +=
             if(gear_angle() < -20.0){
                 0.0
@@ -174,11 +176,13 @@ class Arm_v2(private val instance: LinearOpMode) {
 
         val gear_offset = (gear_r.position - gear_l.position).toDouble() / 200.0
         val slide_offset = (slide_l.position - slide_r.position).toDouble() / 200.0
-
-//        gear_r.setPowerWithTol(gear_output - gear_offset)
-//        gear_l.setPowerWithTol(gear_output + gear_offset)
-//        slide_l.setPowerWithTol(slide_output - slide_offset)
-//        slide_r.setPowerWithTol(slide_output + slide_offset)
+/*
+        gear_r.setPowerWithTol(gear_output - gear_offset)
+        gear_l.setPowerWithTol(gear_output + gear_offset)
+        slide_l.setPowerWithTol(slide_output - slide_offset)
+        slide_r.setPowerWithTol(slide_output + slide_offset)
+ */
+        //GRAV
         if(gear_is_on){
             if(gear_r.zeroPowerBehavior == DcMotor.ZeroPowerBehavior.FLOAT || gear_l.zeroPowerBehavior == DcMotor.ZeroPowerBehavior.FLOAT) {
                 gear_r.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE

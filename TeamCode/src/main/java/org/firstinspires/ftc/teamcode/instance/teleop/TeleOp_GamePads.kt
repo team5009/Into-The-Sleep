@@ -23,7 +23,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
     var a1_pressed = false
     var a2_pressed = false
     var b1_pressed = false
-    var b_pressed = false
+    var high_to_low = false
     var x_pressed = false
     var manual_slide = false
     var manual_wrist = false
@@ -34,18 +34,11 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
     var slide = 0.0
 
     fun game_pad_1() {
-        if (gamepad1.circle && armState == Arm_v2.ArmState.SUBMERSIBLE && !b1_pressed) {
-            Arm_v2.grav.set(true)
-            b1_pressed = true
-        } else if (gamepad1.circle) {
+        //MOVE SERVO FOR BUCKET
+        if (gamepad1.circle) {
             arm.wrist_servos(0.4, 0.4)
-        } else if (!gamepad1.circle && b1_pressed) {
-            if (armState == Arm_v2.ArmState.WALL_PICKUP) {
-                Arm_v2.grav.set(false)
-                armState = Arm_v2.ArmState.SUBMERSIBLE
-            }
-            b1_pressed = false
         }
+        //GRAV FOR SUB
         if(gamepad1.cross && !this.x_pressed && armState == Arm_v2.ArmState.SUBMERSIBLE){
             Arm_v2.grav.set(true)
             arm.wrist_servos(0.45, 0.45)
@@ -57,14 +50,14 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             this.x_pressed = false
         }
 
-        // HIGH CHAMBER CLIP
+        // HIGH CHAMBER CLIP FROM Y2
         if (gamepad1.triangle) {
             Arm_v2.gear_target.set(-9.0 + offset)
             Arm_v2.slide_target.set(3.0)
             armState = Arm_v2.ArmState.CRUISE
         }
 
-        // HANG
+        // HANG Position
         if (gamepad1.dpad_down){
             Arm_v2.gear_target.set(-20.0)
             Arm_v2.slide_target.set(12.0)
@@ -146,9 +139,17 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
     }
 
     fun game_pad_2() {
-        // NET ZONE
+        // BUCKET
         if (gamepad2.y && !y_pressed) {
-            if (armState == Arm_v2.ArmState.LOW_BASKET) {
+            if (armState == Arm_v2.ArmState.HIGH_BASKET) {
+                //low basket
+                Arm_v2.gear_target.set(-9.0 + offset)
+                Arm_v2.slide_target.set(8.0)
+                Arm_v2.grav.set(false)
+                arm.wrist_servos(0.1, 0.1)
+                manual_slide = false
+                armState = Arm_v2.ArmState.LOW_BASKET
+            } else if (armState == Arm_v2.ArmState.CRUISE) {
                 //high basket
                 arm.wrist_servos(0.1, 0.1)
                 Arm_v2.gear_target.set(-9.0 + offset)
@@ -157,14 +158,6 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
 
                 manual_slide = true
                 armState = Arm_v2.ArmState.HIGH_BASKET
-            } else if (armState == Arm_v2.ArmState.CRUISE) {
-                //low basket
-                Arm_v2.gear_target.set(-9.0 + offset)
-                Arm_v2.slide_target.set(8.0)
-                Arm_v2.grav.set(false)
-                arm.wrist_servos(0.1, 0.1)
-                manual_slide = false
-                armState = Arm_v2.ArmState.LOW_BASKET
             } else {
                 //no slide
                 if(armState != Arm_v2.ArmState.HIGH_BASKET) {
@@ -173,12 +166,13 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
                 } else {
                     Arm_v2.grav.set(false)
                 }
-                Arm_v2.gear_target.set(-5.0 + offset)
-                Arm_v2.slide_target.set(3.0)
+                Arm_v2.gear_target.set(7.0 + offset)
+                Arm_v2.slide_target.set(5.0)
                 armState = Arm_v2.ArmState.CRUISE
             }
             y_pressed = true
         } else if (!gamepad2.y && y_pressed) {
+            //Cruise
             if (armState == Arm_v2.ArmState.CRUISE && arm.gear_r.position / arm.gear_degrees_ticks < 30.0) {
                 Arm_v2.free_slide.set(true)
                 y_pressed = false
@@ -186,6 +180,14 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
                 Arm_v2.free_slide.set(false)
                 y_pressed = false
             }
+        }
+        if(gamepad2.b && armState == Arm_v2.ArmState.HIGH_BASKET){
+            Arm_v2.gear_target.set(-9.0 + offset)
+            Arm_v2.slide_target.set(9.0)
+            Arm_v2.grav.set(false)
+            arm.wrist_servos(0.1, 0.1)
+            manual_slide = false
+            armState = Arm_v2.ArmState.LOW_BASKET
         }
 
         // PICK UP
@@ -216,7 +218,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
 
         // INTAKE SERVOS
         if (gamepad2.right_bumper) {
-            arm.intake_servos(1.0)  //outake
+            arm.intake_servos(1.0)
         } else if (gamepad2.left_bumper) {
             arm.intake_servos(-1.0)
         } else {

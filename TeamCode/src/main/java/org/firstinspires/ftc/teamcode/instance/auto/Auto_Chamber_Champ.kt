@@ -18,32 +18,35 @@ class Auto_Chamber_Champ (private val instance : LinearOpMode, private val arm :
         // START
         bot.path.start(Point(11.0, 63.0 * linearadjust, "start_sample").setDeg(0.0))
         .wait(500.0)
-        bot.path.segment(Point(36.0, 63.0 * linearadjust, "set_first"))
+        bot.path.segment(
+            Point(26.0, 63.0 * linearadjust, "set_first").setTolerance(2.0),
+            Point(31.0, 63.0 * linearadjust)
+            )
         eventListener.states.set(ChamberStates.CLIP_READY)
         while(instance.opModeIsActive() && eventListener.states.get() != ChamberStates.CLIPPED) {
             bot.path.wait(100.0)
         }
         //PUSH 1
         bot.path.segment(
-            Point(32.0, 34.0).setTolerance(5.0).setDeg(-90.0),
-            Point(52.0, 26.0 * linearadjust).setTolerance(4.0).setDeg(-90.0),
-            Point(61.0, 20.0 * linearadjust, "half_push").setTolerance(4.0).setDeg(-90.0),
-            Point(11.0, 20.0 * linearadjust).setDeg(-120.0)
+            Point(23.0, 36.0).setTolerance(5.0).setDeg(-90.0),
+            Point(50.0, 36.0 * linearadjust).setTolerance(4.0).setDeg(-90.0),
+            Point(55.0, 25.0 * linearadjust, "_half_push").setTolerance(4.0).setDeg(-90.0),
+            Point(22.0, 27.0 * linearadjust).setDeg(-70.0)
         )
         eventListener.states.set(ChamberStates.PUSHED)
 
         //PICKUP 1
         bot.path.segment(
-            Point(9.0, 27.0).setTolerance(4.0).setDeg(-130.0),
-            Point(9.0, 24.0 * linearadjust, "pick_up").setDeg(-130.0)
+            Point(22.0, 24.0, "set_pick_up").setTolerance(4.0).setDeg(-130.0),
+            Point(22.0, 24.0 * linearadjust, "pick_up").setDeg(-130.0)
         )
         eventListener.states.set(ChamberStates.PICKUP_READY)
         while(instance.opModeIsActive() && eventListener.states.get() != ChamberStates.PICKUP){
             instance.sleep(100)
         }
         bot.path.segment(
-            Point(31.0, 70.0 * linearadjust, "set_gear").setTolerance(4.0).setDeg(-170.0),
-            Point(31.0, 66.0 * linearadjust).setDeg(-170.0)
+            Point(33.0, 66.0 * linearadjust, "set_gear").setTolerance(4.0).setDeg(-179.0),
+            Point(36.0, 66.0 * linearadjust).setDeg(-179.0)
         )
         eventListener.states.set(ChamberStates.CLIP_READY)
         while(instance.opModeIsActive() && eventListener.states.get() != ChamberStates.CLIPPED){
@@ -51,16 +54,16 @@ class Auto_Chamber_Champ (private val instance : LinearOpMode, private val arm :
         }
         //PICKUP 2
         bot.path.segment(
-            Point(31.0, 20.0, "set_pick_up").setTolerance(5.0).setDeg(-179.0),
-            Point(31.0, 22.0 * linearadjust, "pick_up").setTolerance(4.0).setDeg(-179.0)
+            Point(28.0, 24.0, "set_pick_up").setTolerance(5.0).setDeg(-179.0),
+            Point(28.0, 26.0 * linearadjust, "pick_up").setTolerance(4.0).setDeg(-179.0)
         )
         eventListener.states.set(ChamberStates.PICKUP_READY)
         while(instance.opModeIsActive() && eventListener.states.get() != ChamberStates.PICKUP){
             instance.sleep(100)
         }
         bot.path.segment(
-            Point(31.0, 74.0 * linearadjust, "set_gear").setTolerance(4.0).setDeg(-179.0),
-            Point(31.0, 70.0 * linearadjust).setDeg(-179.0)
+            Point(33.0, 69.0 * linearadjust, "set_gear").setTolerance(4.0).setDeg(-179.0),
+            Point(36.0, 69.0 * linearadjust).setDeg(-179.0)
         )
         eventListener.states.set(ChamberStates.CLIP_READY)
         while(instance.opModeIsActive() && eventListener.states.get() != ChamberStates.CLIPPED){
@@ -68,16 +71,16 @@ class Auto_Chamber_Champ (private val instance : LinearOpMode, private val arm :
         }
         //PICKUP 3
         bot.path.segment(
-            Point(31.0, 20.0, "set_pick_up").setTolerance(5.0).setDeg(-179.0),
-            Point(31.0, 22.0 * linearadjust, "pick_up").setTolerance(4.0).setDeg(-179.0)
+            Point(28.0, 24.0, "set_pick_up").setTolerance(5.0).setDeg(-179.0),
+            Point(28.0, 26.0 * linearadjust, "pick_up").setTolerance(4.0).setDeg(-179.0)
         )
         eventListener.states.set(ChamberStates.PICKUP_READY)
         while(instance.opModeIsActive() && eventListener.states.get() != ChamberStates.PICKUP){
             instance.sleep(100)
         }
         bot.path.segment(
-            Point(31.0, 78.0 * linearadjust, "set_gear").setTolerance(4.0).setDeg(-179.0),
-            Point(31.0, 74.0 * linearadjust).setDeg(-179.0)
+            Point(33.0, 72.0 * linearadjust, "set_gear").setTolerance(4.0).setDeg(-179.0),
+            Point(36.0, 72.0 * linearadjust).setDeg(-179.0)
         )
         eventListener.states.set(ChamberStates.CLIP_READY)
         while(instance.opModeIsActive() && eventListener.states.get() != ChamberStates.CLIPPED){
